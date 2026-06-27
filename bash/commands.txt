@@ -1,0 +1,11 @@
+head -> display begining of File (default 10) else -n _
+tail -> display last 10 
+
+grep -> find patterns in linux filesystem
+flags:
+-i -> match both upper and lower
+-v -> don't match the pattern
+-c -> used to count the number of patterns
+-r recuressive search
+
+
