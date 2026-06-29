@@ -1,0 +1,117 @@
+2026-06-29T00:01:02.112Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Application started successfully on port 8080
+2026-06-29T00:01:03.445Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connected to PostgreSQL at pg-primary.db.svc.cluster.local:5432
+2026-06-29T00:01:03.891Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Redis cache connected at redis-master.cache.svc.cluster.local:6379
+2026-06-29T00:01:04.200Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Kafka consumer initialized. Topics: [patient-events, lab-results, adt-feed]
+2026-06-29T00:05:11.330Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (12ms) [user: healthcheck-probe]
+2026-06-29T00:10:11.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (9ms) [user: healthcheck-probe]
+2026-06-29T00:15:11.512Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (11ms) [user: healthcheck-probe]
+2026-06-29T00:22:45.891Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Starting scheduled ETL job: daily-census-aggregation
+2026-06-29T00:22:46.103Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Reading source: adt-feed (offset: 849201, partition: 0)
+2026-06-29T00:22:46.987Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Fetched 4820 records from adt-feed in 884ms
+2026-06-29T00:22:50.112Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Transformed 4820 records. Nulls dropped: 12. Duplicates removed: 3.
+2026-06-29T00:22:52.440Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Loaded 4805 records to warehouse.census_daily table
+2026-06-29T00:22:52.561Z INFO  [pipeline-worker] [pod: pipeline-worker-0] ETL job daily-census-aggregation completed in 6.67s
+2026-06-29T00:30:15.229Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Slow query detected: SELECT * FROM patient_vitals WHERE admitted_date > '2026-01-01' took 3412ms (threshold: 2000ms)
+2026-06-29T00:30:15.230Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/reports/vitals 200 OK (3445ms) [user: dashboard-service]
+2026-06-29T00:45:22.003Z INFO  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumed 120 messages from lab-results (lag: 0)
+2026-06-29T01:00:11.780Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (10ms) [user: healthcheck-probe]
+2026-06-29T01:14:33.001Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Starting scheduled ETL job: lab-results-sync
+2026-06-29T01:14:34.220Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Fetched 1102 records from lab-results topic
+2026-06-29T01:14:35.890Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Loaded 1102 records to warehouse.lab_results table
+2026-06-29T01:14:35.901Z INFO  [pipeline-worker] [pod: pipeline-worker-0] ETL job lab-results-sync completed in 2.9s
+2026-06-29T01:30:08.445Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Redis cache miss rate high: 42% over last 5 minutes (threshold: 30%)
+2026-06-29T01:30:08.446Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Cache warming triggered for namespace: patient-summary
+2026-06-29T01:45:19.003Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Cache miss rate normalized: 18% (namespace: patient-summary)
+2026-06-29T02:00:10.991Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (8ms) [user: healthcheck-probe]
+2026-06-29T02:11:44.320Z ERROR [pipeline-worker] [pod: pipeline-worker-0] Failed to connect to source DB replica pg-replica-1.db.svc.cluster.local:5432 — Connection refused
+2026-06-29T02:11:44.321Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Falling back to primary: pg-primary.db.svc.cluster.local:5432
+2026-06-29T02:11:44.900Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Fallback connection to primary successful
+2026-06-29T02:11:45.112Z WARN  [pipeline-worker] [pod: pipeline-worker-0] pg-replica-1 appears to be DOWN. Alert dispatched to infra-oncall channel.
+2026-06-29T02:30:17.881Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/reports/icd-summary 200 OK (780ms) [user: billing-service]
+2026-06-29T03:00:11.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (9ms) [user: healthcheck-probe]
+2026-06-29T03:22:59.441Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Unhandled exception in /api/v1/patient/discharge-summary — NullPointerException at PatientService.java:142
+2026-06-29T03:22:59.442Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Stack trace: PatientService.buildDischargeSummary(PatientService.java:142) -> ReportController.generate(ReportController.java:88) -> ...
+2026-06-29T03:22:59.443Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/patient/discharge-summary 500 Internal Server Error (44ms) [user: ehr-connector]
+2026-06-29T03:23:01.220Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] 3 consecutive 500 errors on /api/v1/patient/discharge-summary in last 60s
+2026-06-29T03:40:00.112Z INFO  [kubernetes] [namespace: healthcare-prod] Liveness probe failed for pod analytics-api-7d9f8b6c4-xkp2r (exit code: 1). Restarting container.
+2026-06-29T03:40:05.330Z INFO  [kubernetes] [namespace: healthcare-prod] Pod analytics-api-7d9f8b6c4-xkp2r restarted successfully. Restart count: 1
+2026-06-29T03:40:07.881Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Application started successfully on port 8080 (post-restart)
+2026-06-29T03:40:08.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connected to PostgreSQL at pg-primary.db.svc.cluster.local:5432
+2026-06-29T03:40:08.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Redis cache connected at redis-master.cache.svc.cluster.local:6379
+2026-06-29T04:00:11.330Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (10ms) [user: healthcheck-probe]
+2026-06-29T04:15:33.002Z INFO  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumer group lag alert: topic=patient-events partition=2 lag=15240 (threshold: 10000)
+2026-06-29T04:15:33.003Z WARN  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumer falling behind — possible processing bottleneck or upstream spike
+2026-06-29T04:18:11.445Z INFO  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumer lag recovering: topic=patient-events partition=2 lag=9870
+2026-06-29T04:22:10.990Z INFO  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumer lag resolved: topic=patient-events partition=2 lag=120
+2026-06-29T04:30:44.115Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Starting scheduled ETL job: medication-orders-sync
+2026-06-29T04:30:45.330Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Fetched 3310 records from medication-orders topic
+2026-06-29T04:30:47.002Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Schema validation failed for 8 records in medication-orders-sync — field 'dosage_unit' missing. Records skipped.
+2026-06-29T04:30:48.880Z INFO  [pipeline-worker] [pod: pipeline-worker-0] Loaded 3302 records to warehouse.medication_orders table
+2026-06-29T04:30:48.881Z INFO  [pipeline-worker] [pod: pipeline-worker-0] ETL job medication-orders-sync completed in 4.75s (8 records skipped)
+2026-06-29T05:00:10.009Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (11ms) [user: healthcheck-probe]
+2026-06-29T05:12:01.992Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/reports/bed-occupancy 200 OK (330ms) [user: ops-dashboard]
+2026-06-29T05:30:55.113Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Database connection pool exhausted — all 20 connections in use. Request queued.
+2026-06-29T05:30:55.114Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connection pool wait time: 4200ms for request POST /api/v1/reports/readmission-rate
+2026-06-29T05:30:59.330Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connection released. Pool utilization back to 85%.
+2026-06-29T05:30:59.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/reports/readmission-rate 200 OK (4650ms) [user: quality-team-portal]
+2026-06-29T05:45:20.001Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Starting scheduled ETL job: icu-vitals-aggregation
+2026-06-29T05:45:21.330Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Fetched 28100 records from icu-vitals stream
+2026-06-29T05:45:24.002Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Loaded 28100 records to warehouse.icu_vitals_hourly table
+2026-06-29T05:45:24.115Z INFO  [pipeline-worker] [pod: pipeline-worker-1] ETL job icu-vitals-aggregation completed in 4.11s
+2026-06-29T06:00:11.780Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (9ms) [user: healthcheck-probe]
+2026-06-29T06:05:33.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] User session started [user: dr.mehta@nh.org] [role: physician] [ip: 10.20.1.45]
+2026-06-29T06:06:01.001Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/patient/P-10042/summary 200 OK (210ms) [user: dr.mehta@nh.org]
+2026-06-29T06:07:15.882Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/patient/P-10042/lab-trends 200 OK (455ms) [user: dr.mehta@nh.org]
+2026-06-29T06:10:44.330Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Rate limit approaching for user dashboard-service: 850/1000 req/min
+2026-06-29T06:10:55.991Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Rate limit exceeded for user dashboard-service: 1000/1000 req/min. Request rejected.
+2026-06-29T06:10:55.992Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/reports/census 429 Too Many Requests (2ms) [user: dashboard-service]
+2026-06-29T06:11:30.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Rate limit window reset for user: dashboard-service
+2026-06-29T06:15:00.334Z INFO  [kubernetes] [namespace: healthcare-prod] HPA scaled deployment analytics-api from 2 → 3 replicas (CPU utilization: 78%)
+2026-06-29T06:15:45.112Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-ab3t9] New pod started and ready. Joined service endpoints.
+2026-06-29T06:30:11.220Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (8ms) [user: healthcheck-probe]
+2026-06-29T06:44:15.003Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED — Timeout after 300s reading from source: radiology-pacs.internal:8443
+2026-06-29T06:44:15.004Z ERROR [pipeline-worker] [pod: pipeline-worker-0] Root cause: java.net.SocketTimeoutException: Read timed out (radiology-pacs.internal:8443)
+2026-06-29T06:44:15.005Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Job radiology-reports-sync will retry in 600s (attempt 1/3)
+2026-06-29T07:00:10.770Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (11ms) [user: healthcheck-probe]
+2026-06-29T07:12:22.330Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/reports/surgery-outcomes 200 OK (921ms) [user: quality-team-portal]
+2026-06-29T07:14:15.003Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED on retry 2 — Timeout after 300s
+2026-06-29T07:14:15.004Z ERROR [pipeline-worker] [pod: pipeline-worker-0] radiology-pacs.internal:8443 unreachable — possible network partition or service outage
+2026-06-29T07:14:15.005Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Job radiology-reports-sync will retry in 600s (attempt 2/3)
+2026-06-29T07:30:12.001Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/reports/department-wise-admissions 200 OK (670ms) [user: ops-dashboard]
+2026-06-29T07:44:15.110Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED on retry 3/3 — All retries exhausted
+2026-06-29T07:44:15.111Z CRITICAL [pipeline-worker] [pod: pipeline-worker-0] Job radiology-reports-sync marked as DEAD. Manual intervention required. Alerting data-oncall.
+2026-06-29T08:00:10.882Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (10ms) [user: healthcheck-probe]
+2026-06-29T08:02:33.445Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] User session started [user: admin@nh.org] [role: admin] [ip: 10.20.0.5]
+2026-06-29T08:02:50.001Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Unusual access pattern: admin@nh.org accessed 42 patient records in under 60s
+2026-06-29T08:03:15.990Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Audit log written: bulk-access event for user admin@nh.org [HIPAA-AUDIT-20260629-0001]
+2026-06-29T08:15:44.003Z INFO  [kubernetes] [namespace: healthcare-prod] CronJob db-backup-daily triggered successfully
+2026-06-29T08:15:45.110Z INFO  [db-backup] [pod: db-backup-daily-28911840-vx7p2] Starting backup of pg-primary.db.svc.cluster.local → az-blob://nh-backups/pg/2026-06-29/
+2026-06-29T08:22:30.002Z INFO  [db-backup] [pod: db-backup-daily-28911840-vx7p2] Backup completed successfully. Size: 4.2 GB. Duration: 405s.
+2026-06-29T08:22:30.003Z INFO  [db-backup] [pod: db-backup-daily-28911840-vx7p2] Backup verified. SHA256 checksum matches.
+2026-06-29T08:30:15.770Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (9ms) [user: healthcheck-probe]
+2026-06-29T08:45:03.112Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] JWT token validation failed for request GET /api/v1/patient/P-20198/summary — Token expired [user: nurse-portal-svc]
+2026-06-29T08:45:03.113Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/patient/P-20198/summary 401 Unauthorized (5ms) [user: nurse-portal-svc]
+2026-06-29T08:45:10.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Token refreshed for service: nurse-portal-svc
+2026-06-29T08:45:12.001Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/patient/P-20198/summary 200 OK (198ms) [user: nurse-portal-svc]
+2026-06-29T09:00:10.330Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (10ms) [user: healthcheck-probe]
+2026-06-29T09:10:55.002Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Disk usage on /data/temp: 81% (threshold: 80%). Temp files older than 24h will be purged.
+2026-06-29T09:11:00.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Temp file cleanup triggered. Deleted 234 files (1.8 GB freed). Disk at 68%.
+2026-06-29T09:30:45.112Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/reports/cost-per-drg 200 OK (544ms) [user: finance-portal]
+2026-06-29T09:45:11.330Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Starting scheduled ETL job: billing-reconciliation
+2026-06-29T09:45:13.440Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Fetched 7890 billing records from source
+2026-06-29T09:45:16.001Z WARN  [pipeline-worker] [pod: pipeline-worker-1] 22 records have mismatched patient IDs between billing and clinical systems — flagged for review
+2026-06-29T09:45:17.330Z INFO  [pipeline-worker] [pod: pipeline-worker-1] Loaded 7868 valid records to warehouse.billing_reconciliation table
+2026-06-29T09:45:17.331Z INFO  [pipeline-worker] [pod: pipeline-worker-1] ETL job billing-reconciliation completed. 22 records written to exceptions.billing_mismatch for manual review.
+2026-06-29T10:00:11.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (8ms) [user: healthcheck-probe]
+2026-06-29T10:15:22.880Z INFO  [kubernetes] [namespace: healthcare-prod] HPA scaled deployment analytics-api from 3 → 2 replicas (CPU utilization: 34%)
+2026-06-29T10:15:25.001Z INFO  [kubernetes] [namespace: healthcare-prod] Pod analytics-api-7d9f8b6c4-ab3t9 gracefully terminated
+2026-06-29T10:30:11.445Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (9ms) [user: healthcheck-probe]
+2026-06-29T10:44:59.003Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] OutOfMemoryError: Java heap space — pod memory usage at 97% (limit: 2Gi)
+2026-06-29T10:44:59.004Z CRITICAL [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] JVM heap dump triggered. Writing to /data/dumps/heapdump-20260629-104459.hprof
+2026-06-29T10:45:01.330Z INFO  [kubernetes] [namespace: healthcare-prod] Container analytics-api-7d9f8b6c4-xkp2r OOMKilled. Restarting (restart count: 2)
+2026-06-29T10:45:06.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Application started successfully on port 8080 (post-OOMKill restart)
+2026-06-29T10:45:06.880Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connected to PostgreSQL at pg-primary.db.svc.cluster.local:5432
+2026-06-29T10:45:07.001Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Redis cache connected at redis-master.cache.svc.cluster.local:6379
+2026-06-29T11:00:10.112Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (11ms) [user: healthcheck-probe]
+2026-06-29T11:10:33.440Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/reports/mortality-index 200 OK (890ms) [user: quality-team-portal]
+2026-06-29T11:30:18.002Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] GET /api/v1/health 200 OK (10ms) [user: healthcheck-probe]

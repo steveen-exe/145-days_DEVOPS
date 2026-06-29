@@ -1,0 +1,87 @@
+Hi today is day-3 and we gonna cover 
+Linux text processing
+
+tools ->
+1. cat
+    display file contents
+    application -> quickly view small configuration files
+    -n 
+
+
+2. less
+    better than cat for large files 
+    navigation:
+        Space -> next page
+
+        b -> previous page
+
+        /ERROR -> search
+
+        n -> next result
+
+        q -> quit
+Production use ->
+Open a 2GB log file without loading everything into memory.
+
+3. more-> old pager tool
+4. grep -> mostly used linux command
+        used for search patterns within a file
+
+-A | -B is used to diaplay lines before and after a match
+Search all files in a folder recursively:bashgrep -r "API_KEY" ./src/
+
+5. wc which is used todisplay the number of
+        words | characters | lines within a file
+
+6. sort -> Sort text
+    sort <filename>
+    sort -r <filename>#rev sort
+    sort -n numbers.text
+    
+
+7.uniq -> Remove dulpicate lines
+    uniq <filename>
+    usally combined with sort. -> sort and view unique entries
+
+8. cut -> 
+used to extract columns
+>>>cut -d "," -f1 employees.csv #-d -> delimeter and f -> the field or column 
+                                                to extract starting from 1.
+
+                    range -f 2-4 > extra
+
+9.tr
+- echo "devops" |  tr a-z A-z
+convert to diff. cases
+
+
+10.tee 
+-write output to screen and file.
+- kubectl logs pod | tee logs.text
+
+pipes in linux -> |
+redirect > - overitte
+>> - append
+
+<-input #eg. mysql -u user -p database_name < backup.sql 
+                    wc -l < log.txt 
+
+2> - error maps only the error lines from --- ls non_existent_file 2> errors.txt
+    discard error -> grep "search_term" /root/secret_file 2> /dev/null
+
+Real Production Scenario
+
+application scenario :
+    application is slow
+    1. tail -100 application.log
+    2.grep ERROR application.log
+    3. grep time application.log
+    4. grep Database application.log
+    5. grep ERROR application.log | wc -l
+    6. grep ERROR application.log | sort | uniq -c
+
+
+
+
+
+
