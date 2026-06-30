@@ -1,0 +1,28 @@
+2026-06-29T02:11:44.320Z ERROR [pipeline-worker] [pod: pipeline-worker-0] Failed to connect to source DB replica pg-replica-1.db.svc.cluster.local:5432 — Connection refused
+2026-06-29T03:22:59.441Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Unhandled exception in /api/v1/patient/discharge-summary — NullPointerException at PatientService.java:142
+2026-06-29T03:22:59.442Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Stack trace: PatientService.buildDischargeSummary(PatientService.java:142) -> ReportController.generate(ReportController.java:88) -> ...
+2026-06-29T03:22:59.443Z INFO  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] POST /api/v1/patient/discharge-summary 500 Internal Server Error (44ms) [user: ehr-connector]
+2026-06-29T03:23:01.220Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] 3 consecutive 500 errors on /api/v1/patient/discharge-summary in last 60s
+2026-06-29T05:30:55.113Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Database connection pool exhausted — all 20 connections in use. Request queued.
+2026-06-29T06:10:55.991Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Rate limit exceeded for user dashboard-service: 1000/1000 req/min. Request rejected.
+2026-06-29T06:44:15.003Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED — Timeout after 300s reading from source: radiology-pacs.internal:8443
+2026-06-29T06:44:15.004Z ERROR [pipeline-worker] [pod: pipeline-worker-0] Root cause: java.net.SocketTimeoutException: Read timed out (radiology-pacs.internal:8443)
+2026-06-29T07:14:15.003Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED on retry 2 — Timeout after 300s
+2026-06-29T07:14:15.004Z ERROR [pipeline-worker] [pod: pipeline-worker-0] radiology-pacs.internal:8443 unreachable — possible network partition or service outage
+2026-06-29T07:44:15.110Z ERROR [pipeline-worker] [pod: pipeline-worker-0] ETL job radiology-reports-sync FAILED on retry 3/3 — All retries exhausted
+2026-06-29T08:45:03.112Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] JWT token validation failed for request GET /api/v1/patient/P-20198/summary — Token expired [user: nurse-portal-svc]
+2026-06-29T10:44:59.003Z ERROR [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] OutOfMemoryError: Java heap space — pod memory usage at 97% (limit: 2Gi)
+2026-06-29T00:30:15.229Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Slow query detected: SELECT * FROM patient_vitals WHERE admitted_date > '2026-01-01' took 3412ms (threshold: 2000ms)
+2026-06-29T01:30:08.445Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Redis cache miss rate high: 42% over last 5 minutes (threshold: 30%)
+2026-06-29T02:11:44.321Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Falling back to primary: pg-primary.db.svc.cluster.local:5432
+2026-06-29T02:11:45.112Z WARN  [pipeline-worker] [pod: pipeline-worker-0] pg-replica-1 appears to be DOWN. Alert dispatched to infra-oncall channel.
+2026-06-29T03:23:01.220Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] 3 consecutive 500 errors on /api/v1/patient/discharge-summary in last 60s
+2026-06-29T04:15:33.003Z WARN  [kafka-consumer] [pod: analytics-api-7d9f8b6c4-xkp2r] Consumer falling behind — possible processing bottleneck or upstream spike
+2026-06-29T04:30:47.002Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Schema validation failed for 8 records in medication-orders-sync — field 'dosage_unit' missing. Records skipped.
+2026-06-29T05:30:55.114Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Connection pool wait time: 4200ms for request POST /api/v1/reports/readmission-rate
+2026-06-29T06:10:44.330Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Rate limit approaching for user dashboard-service: 850/1000 req/min
+2026-06-29T06:44:15.005Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Job radiology-reports-sync will retry in 600s (attempt 1/3)
+2026-06-29T07:14:15.005Z WARN  [pipeline-worker] [pod: pipeline-worker-0] Job radiology-reports-sync will retry in 600s (attempt 2/3)
+2026-06-29T08:02:50.001Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Unusual access pattern: admin@nh.org accessed 42 patient records in under 60s
+2026-06-29T09:10:55.002Z WARN  [analytics-api] [pod: analytics-api-7d9f8b6c4-xkp2r] Disk usage on /data/temp: 81% (threshold: 80%). Temp files older than 24h will be purged.
+2026-06-29T09:45:16.001Z WARN  [pipeline-worker] [pod: pipeline-worker-1] 22 records have mismatched patient IDs between billing and clinical systems — flagged for review

@@ -1,0 +1,35 @@
+whoami -> displays username linux
+id --> unique no assigned to each user
+groups ->  group in Linux is a collection of user accounts that share the same
+     access permissions for files, directories, and system resources
+
+file permisssions 
+- ls -l 
+out is like :
+    -rw-r--r-- 3-user, 3- group, 3-others
+    numbering-
+     4 -read
+     2 -write
+     1 -execute
+     ow these by heart:
+
+755 → Executable scripts
+644 → Normal files
+600 → Private files (keys, secrets)
+
+**Change Ownership_**
+chmod -> modify the owner of a file
+syntax: --- chown [OPTIONS] [NEW_OWNER][:[NEW_GROUP]] FILENAME
+
+ex1 : change only user -
+     chown john file.txt
+ex2. change user and group -
+     chown user:group file.txt
+ex3. change only group
+     chmod :group FILENAME
+recressive folder ->
+     sudo chown -R john:developers /workspaces/my_project/
+
+
+**package management**
+     apt -advanced package manager is commonly used in Linux
