@@ -33,3 +33,29 @@ recressive folder ->
 
 **package management**
      apt -advanced package manager is commonly used in Linux
+     The Advanced Package Tool (APT) manages software on Debian-based Linux
+     distributions by acting as a high-level *orchestrator that queries remote
+     repositories, resolves package dependencies, downloads archives, and hands
+     them to a low-level tool *(dpkg) for actual installation
+     commonly used operations -?
+          apt update
+          apt installl
+          apt remove
+          apt search
+
+
+**enviornment variables**
+     Environment variables are dynamic values that
+     affect the behavior of processes and programs
+     running on your system.
+
+     export NAME="Steve"
+     echo $NAME #perm var -> source ~/.bashrc edit this config file.
+
+     eg:personal@CORPLPW000098:~$ Project=my-java-project
+     personal@CORPLPW000098:~$ echo $Project
+     my-java-project
+
+     Environment variables separate your application code from your configuration data,
+     adhering to modern software practices like the Twelve-Factor App methodology.
+
