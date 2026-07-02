@@ -1,0 +1,47 @@
+Every project|program running inside a linux system is a process
+> check all process 
+    - ps aux | ps -ef -> display parent process id | ps -> display current processes
+
+                | Column  | Meaning       |
+                | ------- | ------------- |
+                | USER    | Process owner |
+                | PID     | Process ID    |
+                | %CPU    | CPU usage     |
+                | %MEM    | Memory usage  |
+                | COMMAND | Executable    |
+
+
+3. list live processes > use top
+    P → CPU sort
+
+    M → Memory sort
+
+    k → Kill process
+
+    q → Quit
+
+
+4.Background jobs
+In Linux, a background job is a process that runs independently of the shell's main interaction 
+loop, freeing up your terminal so you can continue running other commands simultaneously
+
+eg. sleep 200 &
+> jobs #lsit
+> fg #bring foreground
+> kill 1 %
+
+*Kill processes-
+find PID
+- kill <pid>
+
+*Process Tree
+pstree -> map processes
+
+memory usage -> 
+    free -h used to view ram usage
+cpu detaila -> lscpu
+memory info -> vmstat
+
+uptime -> 
+hostname ->
+sudo hostname test-server           
