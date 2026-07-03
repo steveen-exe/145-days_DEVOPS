@@ -1,0 +1,6 @@
+Check network interfaces
+Verify IP addresses
+Test connectivity
+Check open ports
+Debug DNS resolution
+Inspect active network connections
