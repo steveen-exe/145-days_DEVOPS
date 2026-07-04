@@ -1,0 +1,77 @@
+> check ip addr
+    ip addr 
+    ifconfig
+    ipconfig
+    hostname -I 
+
+> check routing
+    ip route - check where the traffic in routed
+
+
+> Test connectivity
+    ping google.com
+    or ping <ip> #if ip work hostname dosen't- internet working but prob with the DNS
+
+
+> dns lookup
+    nslookup <>
+    dig <>
+    Clients request data; servers process and respond via protocols (HTTP, WebSockets)
+    .DNS Lookup: Tools like dig and nslookup translate domain names (google.com) into IP addresses via
+    your local resolver (127.0.0.53).
+    TTL (Time to Live): Google sets a 3-second expiration timer; your
+    local cache saves the IPs but deletes them the moment the countdown hits zero.
+    On-Demand Requests: 
+    Your computer never auto-refreshes expired records in the background; it only fetches fresh IPs when
+    you actively click, browse, or run a command.
+    Load Balancing: Because your cache constantly expires
+    and forces fresh requests, Google can continuously shuffle or swap IPs to distribute heavy traffic
+    and bypass broken servers.
+
+
+> check listening ports -  
+    ss -lnt
+    ss -tulnt# process and pid
+we can see which ports are listing to what all services
+
+> check active connection
+    ss -ant 
+
+> traceroute - traceroute maps the exact path data takes across the internet to reach a destination
+| Hop Range | Description |
+|-----------|-------------|
+| Hops 1 – 3 | Private corporate network infrastructure (WSL Gateway, Office Router, Core Switch) |
+| Hops 4 – 5 | ISP / Telecom provider routing (Convergent India) |
+| Hops 6 – 9 | Google global network and data center infrastructure |
+| Hops 7 – 8 | Load-balanced Google backbone routes for traffic optimization |
+| Final Destination | Google Delhi Server (`del11s20-in-f14.1e100.net`) |
+| Average End-to-End Latency | ~16–18 ms |
+| Network Health | Excellent – low latency, no visible packet loss, stable routing path |
+
+TTL used -> to prevent data packets from wandering around the internet forever if they get lost.
+
+
+>download a webpage -
+    curl <http://....>
+    curl -I <> #header only
+
+> Download File
+    wget <download url>
+
+
+>view n/w interfaces->
+    ip link
+
+
+Production scenario >
+    Issue: A Kubernetes Pod cannot connect to a database.
+
+Troubleshooting steps:
+
+ping <db-ip>
+nslookup <db-hostname>
+ss -tulnp
+curl http://<service>:<port>
+ip route
+
+This mirrors the first checks a DevOps or SRE engineer performs before escalating.

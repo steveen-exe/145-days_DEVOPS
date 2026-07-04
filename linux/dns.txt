@@ -1,0 +1,16 @@
+resolver -> root server root -> resolver(tld ser ip) [get top level derver ip
+.com .net]
+resolver -> TLD (Top Level Domain)  return authoritive nameserver
+tld -> resolver {name server}
+resolver -> authoritive name server (has the info about the doman -ip)
+
+authoritive ns -> 
+finally the authoritive nameserver returns the ip
+
+browser -> server ip {webpage}
+ {save it in dns cashe}
+
+
+
+ 
+
