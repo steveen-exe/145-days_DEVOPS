@@ -1,0 +1,6 @@
+| Feature            | `CMD`                                                            | `ENTRYPOINT`                                                                    |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Purpose            | Provides the **default command or arguments**                    | Defines the **main executable** that always runs                                |
+| Can be overridden? | **Yes**. Any command after `docker run <image> ...` replaces it. | Not easily. Extra arguments are appended to it. Use `--entrypoint` to override. |
+| Best use           | When users may want to run different commands                    | When the container should always behave like a specific executable              |
+| Multiple allowed?  | Only the last `CMD` is used                                      | Only the last `ENTRYPOINT` is used                                              |
