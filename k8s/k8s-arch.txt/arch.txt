@@ -1,0 +1,63 @@
+kube-api server -> clients communicate { The central administrative gateway exposing the Kubernetes HTTP API. Every CLI call from kubectl or
+                                             internal component interaction must pass through this validated}
+        kubectl -> intract with | ci/cd tools | 3rd party
+
+control plane - brain cluster {orchasters and manages}
+    cloud control manager
+    controller manager - desired state maintained{process - with subprocess}
+    etcs -> {key: value} cluster config data
+    api-server -> frontend 
+    scheduler -> pods - worker nods{resource availability}
+    check node and schedulre the pod
+          pushed -> pull it into aks 
+
+dataplane ->
+    kubeproxy- 2 worker node {
+        to-do list
+        4 replicas
+        reddis -backup (3)
+
+    }
+
+identical : images in diff. pods 
+ensure high availability.
+
+pod 1-> pod 3
+load balance -> kubernets service 
+deployments 
+
+
+5 - pods | webservices -> communicate with reddis backend{dir pods -> a single pod communication config. 
+                                                                            high chance of downtime}
+
+                                                |
+                                                |
+                                               \_/
+                                            K8s service(reddis service) req -> service | select the pod 
+                                                |
+                                                |
+                                                \/
+
+#services logical constructs | available to all nodes
+                            3 pods running| redis backend
+                            here 
+
+        Kubeproxy -> traffic director
+                        {take care of service -> pod routing, load distibution,  health checks}
+
+
+in aks cni plugins {container n/w Interfaces}// calico and celium -> perform like kube-proxy
+    assigning ip
+    n/w Interfaces
+    IPAM -> management
+    n/w policy 
+    pod -> pod networking
+
+
+__________________________________________________________________
+Worker Node -
+Kubeproxy
+Kubelet - monitors health instructs the run time to pull-> images(repo) and run container  
+        container lifecycle
+        containerd, podman, rocket
+

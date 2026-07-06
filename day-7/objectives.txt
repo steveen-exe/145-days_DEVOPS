@@ -1,0 +1,5 @@
+Understand how Linux stores logs
+Read application and system logs
+Debug service failures
+Manage services using systemd
+Diagnose production issues using logs

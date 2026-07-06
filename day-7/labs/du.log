@@ -1,0 +1,55 @@
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -sh *
+4.0K    bash
+4.0K    linux
+8.0K    notes
+8.0K    out.md
+20K     project
+
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -sh * | sort -h
+4.0K    bash
+4.0K    linux
+8.0K    notes
+8.0K    out.md
+20K     project
+
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -af
+du: invalid option -- 'f'
+Try 'du --help' for more information.
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -ah
+0       ./linux/commands.txt
+4.0K    ./linux
+0       ./bash/script.sh
+4.0K    ./bash
+4.0K    ./project/logs
+4.0K    ./project/config
+4.0K    ./project/README.md
+4.0K    ./project/scripts
+20K     ./project
+8.0K    ./out.md
+0       ./notes/day.txt
+4.0K    ./notes/day1.txt
+8.0K    ./notes
+48K     .
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -h --max-depth=1
+4.0K    ./linux
+4.0K    ./bash
+20K     ./project
+8.0K    ./notes
+48K     .
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ du -shc *
+4.0K    bash
+4.0K    linux
+8.0K    notes
+8.0K    out.md
+20K     project
+44K     total
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ cles
+
+@steveen-exe ➜ /workspaces/skill-up/day-1 (main) $ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          32G   12G   18G  40% /
+tmpfs            64M     0   64M   0% /dev
+shm              64M     0   64M   0% /dev/shm
+/dev/root        29G   24G  5.6G  81% /vscode
+/dev/sdc1        44G  1.2G   41G   3% /tmp
+/dev/loop4       32G   12G   18G  40% /workspaces

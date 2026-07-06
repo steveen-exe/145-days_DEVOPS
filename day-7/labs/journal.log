@@ -1,0 +1,103 @@
+
+personal@CORPLPW000098:~$ journalctl -n 50
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Finished systemd-user-sessions.service - Permit User Sessions.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: wslg.service: Deactivated successfully.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Finished wslg.service - WSLg Remount Service.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Starting dpkg-db-backup.service - Daily dpkg database backup service...
+Jul 06 02:25:55 CORPLPW000098 kernel: ACPI: AC: AC Adapter [AC1] (off-line)
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Started getty@tty1.service - Getty on tty1.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Reached target getty.target - Login Prompts.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: e2scrub_reap.service: Deactivated successfully.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Finished e2scrub_reap.service - Remove Stale Online ext4 Metadata Check Snaps>
+Jul 06 02:25:55 CORPLPW000098 kernel: ACPI: battery: Slot [BAT1] (battery present)
+Jul 06 02:25:55 CORPLPW000098 systemd-logind[138]: New seat seat0.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Started systemd-logind.service - User Login Management.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: dpkg-db-backup.service: Deactivated successfully.
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Finished dpkg-db-backup.service - Daily dpkg database backup service.
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Reached target multi-user.target - Multi-User System.
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Reached target graphical.target - Graphical Interface.
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Startup finished in 1.111s.
+Jul 06 02:25:56 CORPLPW000098 login[185]: pam_unix(login:session): session opened for user personal(uid=1000) by person>
+Jul 06 02:25:56 CORPLPW000098 systemd-logind[138]: New session c1 of user personal.
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Created slice user-1000.slice - User Slice of UID 1000.
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Starting user-runtime-dir@1000.service - User Runtime Directory /run/user/100>
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Finished user-runtime-dir@1000.service - User Runtime Directory /run/user/100>
+Jul 06 02:25:56 CORPLPW000098 systemd[1]: Starting user@1000.service - User Manager for UID 1000...
+Jul 06 02:25:56 CORPLPW000098 (systemd)[196]: pam_unix(systemd-user:session): session opened for user personal(uid=1000>
+Jul 06 02:25:56 CORPLPW000098 systemd-logind[138]: New session c2 of user personal.
+Jul 06 02:25:56 CORPLPW000098 kernel: kvm_intel: Using Hyper-V Enlightened VMCS
+Jul 06 02:25:56 CORPLPW000098 kernel: vmentry_ctrl unsupported with eVMCS: 0x100000
+Jul 06 02:25:56 CORPLPW000098 kernel: vmexit_ctrl unsupported with eVMCS: 0x10000000
+Jul 06 02:25:56 CORPLPW000098 systemd[196]: Queued start job for default target default.target.
+Jul 06 02:25:56 CORPLPW000098 systemd-journald[39]: File /var/log/journal/9dd06618f7334d40827393af7c71d225/user-1000.jo>
+Jul 06 02:25:56 CORPLPW000098 systemd[196]: Created slice app.slice - User Application Slice.
+Jul 06 02:25:56 CORPLPW000098 systemd[196]: Reached target paths.target - Paths.
+Jul 06 02:25:56 CORPLPW000098 systemd[196]: Reached target sockets.target - Sockets.
+
+personal@CORPLPW000098:~$ journalctl -u dbus
+Jun 29 09:40:01 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jun 29 09:40:01 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jun 29 09:55:50 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jun 29 09:55:50 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+-- Boot 8ba7de9aeead447aa8e4aefdff7117e6 --
+Jun 30 08:46:09 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jun 30 08:46:09 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+-- Boot 48fb7f4de950458d91e5168756e6644b --
+Jun 30 14:51:56 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jun 30 14:51:56 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jun 30 16:29:51 CORPLPW000098 systemd[1]: Stopping dbus.service - D-Bus System Message Bus...
+Jun 30 16:29:51 CORPLPW000098 systemd[1]: dbus.service: Deactivated successfully.
+Jun 30 16:29:51 CORPLPW000098 systemd[1]: Stopped dbus.service - D-Bus System Message Bus.
+-- Boot be0617a0b5b24257bed3188b7008ed96 --
+Jul 01 02:43:12 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jul 01 02:43:12 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jul 01 02:55:53 CORPLPW000098 systemd[1]: Stopping dbus.service - D-Bus System Message Bus...
+Jul 01 02:55:53 CORPLPW000098 systemd[1]: dbus.service: Deactivated successfully.
+Jul 01 02:55:53 CORPLPW000098 systemd[1]: Stopped dbus.service - D-Bus System Message Bus.
+-- Boot e68124dbdd174aefb9608837caee992d --
+Jul 01 02:59:04 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jul 01 02:59:04 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jul 01 03:02:31 CORPLPW000098 systemd[1]: Stopping dbus.service - D-Bus System Message Bus...
+Jul 01 03:02:31 CORPLPW000098 systemd[1]: dbus.service: Deactivated successfully.
+Jul 01 03:02:31 CORPLPW000098 systemd[1]: Stopped dbus.service - D-Bus System Message Bus.
+-- Boot 472b5e46a5f24549a983b43b67d9c293 --
+Jul 03 02:51:50 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jul 03 02:51:50 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus.
+Jul 03 02:52:21 CORPLPW000098 systemd[1]: Stopping dbus.service - D-Bus System Message Bus...
+Jul 03 02:52:21 CORPLPW000098 systemd[1]: dbus.service: Deactivated successfully.
+Jul 03 02:52:21 CORPLPW000098 systemd[1]: Stopped dbus.service - D-Bus System Message Bus.
+Jul 03 02:52:31 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+
+personal@CORPLPW000098:~$
+personal@CORPLPW000098:~$ journalctl --since today
+Jul 06 02:25:55 CORPLPW000098 kernel: Linux version 6.18.33.2-microsoft-standard-WSL2 (root@f1bbfb02316b) (gcc (GCC) 13>
+Jul 06 02:25:55 CORPLPW000098 kernel: Command line: initrd=\initrd.img WSL_ROOT_INIT=1 panic=-1 nr_cpus=8 hv_utils.time>
+Jul 06 02:25:55 CORPLPW000098 kernel: KERNEL supported cpus:
+Jul 06 02:25:55 CORPLPW000098 kernel:   Intel GenuineIntel
+Jul 06 02:25:55 CORPLPW000098 kernel:   AMD AuthenticAMD
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-provided physical RAM map:
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-e820: [mem 0x0000000000000000-0x000000000009ffff] usable
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-e820: [mem 0x00000000000e0000-0x00000000000e0fff] reserved
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-e820: [mem 0x0000000000100000-0x00000000001fffff] ACPI data
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-e820: [mem 0x0000000000200000-0x00000000f7ffffff] usable
+Jul 06 02:25:55 CORPLPW000098 kernel: BIOS-e820: [mem 0x0000000100000000-0x00000001ffbfffff] usable
+Jul 06 02:25:55 CORPLPW000098 kernel: NX (Execute Disable) protection: active
+Jul 06 02:25:55 CORPLPW000098 kernel: APIC: Static calls initialized
+Jul 06 02:25:55 CORPLPW000098 kernel: DMI not present or invalid.
+Jul 06 02:25:55 CORPLPW000098 kernel: Hypervisor detected: Microsoft Hyper-V
+Jul 06 02:25:55 CORPLPW000098 kernel: Hyper-V: privilege flags low 0xae7f, high 0x3b8030, ext 0x42, hints 0xa4e24, misc>
+Jul 06 02:25:55 CORPLPW000098 kernel: Hyper-V: Nested features: 0x3e0101
+Jul 06 02:25:55 CORPLPW000098 kernel: Hyper-V: LAPIC Timer Frequency: 0xc3500
+Jul 06 02:25:55 CORPLPW000098 kernel: Hyper-V: Using hypercall for remote TLB flush
+Jul 06 02:25:55 CORPLPW000098 kernel: clocksource: hyperv_clocksource_tsc_page: mask: 0xffffffffffffffff max_cycles: 0x>
+Jul 06 02:25:55 CORPLPW000098 kernel: clocksource: hyperv_clocksource_msr: mask: 0xffffffffffffffff max_cycles: 0x24e6a>
+Jul 06 02:25:55 CORPLPW000098 kernel: tsc: Marking TSC unstable due to running on Hyper-V
+Jul 06 02:25:55 CORPLPW000098 kernel: tsc: Detected 1689.600 MHz processor
+Jul 06 02:25:55 CORPLPW000098 kernel: e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
+Jul 06 02:25:55 CORPLPW000098 kernel: e820: remove [mem 0x000a0000-0x000fffff] usable
+Jul 06 02:25:55 CORPLPW000098 kernel: last_pfn = 0x1ffc00 max_arch_pfn = 0x400000000
+Jul 06 02:25:55 CORPLPW000098 kernel: MTRR map: 5 entries (4 fixed + 1 variable; max 20), built from 8 variable MTRRs
+Jul 06 02:25:55 CORPLPW000098 kernel: x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT
+Jul 06 02:25:55 CORPLPW000098 kernel: last_pfn = 0xf8000 max_arch_pfn = 0x400000000
+lines 1-29

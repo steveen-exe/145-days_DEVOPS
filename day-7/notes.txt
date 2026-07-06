@@ -1,0 +1,48 @@
+>Systemd
+    check process with p-id -> 1
+    >>ps -p 1
+        Systemd
+    Systemd manages every linux services
+    >ngnix, docker ,ssh...........
+
+>Service management
+    systemctl list-units type=service #list all services running within the syste
+    find ssh>
+        systemctl status ssh
+        # useful commands 
+            start, stop, restart, enable, disable, reload(refresh config. file without stopping)
+    
+
+>Journalctl : This is the most useful command for production debugging using logs.
+    journalctl - view all the logs
+    -journalctl -n 50 #last 50 logs
+    -journalctl -f #follow logs 
+    -journalctl -u ssh #show logs of a specefic service
+    -journalctl --since today
+    -journalctl --since "1 hour ago"
+    -journalctl -p err
+
+
+>Tranditional logs
+    list log dir    
+        >ls /var/log
+            common files
+                /var/log/syslog
+                /var/log/auth.log
+                /var/log/messages
+                /var/log/kern.log
+
+(-f --> always used to follow-on logs{used with journalctl && tail(traditional log files)})
+
+
+>..Search logs
+grep error var/log/systemlog
+grep failed var/log/apache
+tail -f /var/log/systemlog
+
+
+>>disk-usage
+    df -h
+    check directory size
+        du -sh /var/log/*
+        sudo du -ah /var/log | sort -hr | head# find top 10 largest file

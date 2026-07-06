@@ -1,0 +1,49 @@
+personal@CORPLPW000098:~$ systemctl list-units --type=service
+  UNIT                                     LOAD   ACTIVE SUB     DESCRIPTION
+  cron.service                             loaded active running Regular background program processing daemon
+  dbus.service                             loaded active running D-Bus System Message Bus
+  getty@tty1.service                       loaded active running Getty on tty1
+  ifupdown-pre.service                     loaded active exited  Helper to synchronize boot up for ifupdown
+  kmod-static-nodes.service                loaded active exited  Create List of Static Device Nodes
+  networking.service                       loaded active exited  Raise network interfaces
+  systemd-journal-flush.service            loaded active exited  Flush Journal to Persistent Storage
+  systemd-journald.service                 loaded active running Journal Service
+  systemd-logind.service                   loaded active running User Login Management
+  systemd-modules-load.service             loaded active exited  Load Kernel Modules
+  systemd-remount-fs.service               loaded active exited  Remount Root and Kernel File Systems
+  systemd-sysctl.service                   loaded active exited  Apply Kernel Variables
+  systemd-tmpfiles-setup-dev-early.service loaded active exited  Create Static Device Nodes in /dev gracefully
+  systemd-tmpfiles-setup-dev.service       loaded active exited  Create Static Device Nodes in /dev
+  systemd-tmpfiles-setup.service           loaded active exited  Create System Files and Directories
+  systemd-udev-load-credentials.service    loaded active exited  Load udev Rules from Credentials
+  systemd-udev-trigger.service             loaded active exited  Coldplug All udev Devices
+  systemd-udevd.service                    loaded active running Rule-based Manager for Device Events and Files
+  systemd-user-sessions.service            loaded active exited  Permit User Sessions
+  user-runtime-dir@1000.service            loaded active exited  User Runtime Directory /run/user/1000
+  user@1000.service                        loaded active running User Manager for UID 1000
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+21 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+lines 1-29
+
+
+personal@CORPLPW000098:~$ systemctl status dbus
+● dbus.service - D-Bus System Message Bus
+     Loaded: loaded (/usr/lib/systemd/system/dbus.service; static)
+     Active: active (running) since Mon 2026-07-06 02:25:55 UTC; 3min 1s ago
+ Invocation: 7fd9bd7db4c6437fb6ef69727131d8d1
+TriggeredBy: ● dbus.socket
+       Docs: man:dbus-daemon(1)
+   Main PID: 119 (dbus-daemon)
+      Tasks: 1 (limit: 9361)
+     Memory: 2.9M (peak: 3.5M)
+        CPU: 55ms
+     CGroup: /system.slice/dbus.service
+             └─119 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog->
+
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Starting dbus.service - D-Bus System Message Bus...
+Jul 06 02:25:55 CORPLPW000098 systemd[1]: Started dbus.service - D-Bus System Message Bus

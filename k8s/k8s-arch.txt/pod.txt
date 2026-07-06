@@ -1,0 +1,16 @@
+pod is the smallest deployable unit within k8s
+- pod usally contain 1 container might be more than one 
+    - container 1 run app | container 2-> logs shipped to central server
+    - " | container 2 matrics -> monitoring repo
+    - " | proxy{connection to made outside}
+    -" | rev-proxy
+    {.....sidecar patterns.........}
+
+    multiple container ->share networking
+
+    2 ns -> 2 network boundry
+    -share storage - 5gb -> map to 2 container
+
+
+
+

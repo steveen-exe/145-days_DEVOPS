@@ -1,0 +1,13 @@
+Userbase -> 10 users| single pods |no restart | crash
+in k8s -> deployment{object}
+s/g pod -> deployment will restart the pod
+userbase -> 100 | deplyment {replica : 10} -> 10 instances running
+
+rolling updates | rollbacks->
+update it without downtime
+10 pods -> 5 | 2 | 2| 1 updates 
+& rollbacks are also possible
+
+declarative congig:
+    10 pods {deployment cntrler} -> object(manged..by )
+    
