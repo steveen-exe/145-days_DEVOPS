@@ -11,3 +11,35 @@ update it without downtime
 declarative congig:
     10 pods {deployment cntrler} -> object(manged..by )
     
+
+Deploying a python app >
+
+    Deployment {wrap rd}
+
+    Replica-Sets{wrap pods}
+
+    pod1 pod2 pod3 pod4 pod5
+    c1   c2    c3  c4   c5
+
+deployment.yaml -> kubectlrecice-> verify the syntax
+                        {check indentation and schema} 
+                        -> api-server{auth} -> verify the sysntax
+                        -> store it in etcd datastore
+                        -> response { to kubectl}
+                        -> Contro manager {dosen't have the desired sate}
+                        -> create replicas{api server} and store in etcd
+                        -> scheduling schedules pod = node
+                        -> node {1 should place pods | not place pods}
+                        -> scheduler -> api server{ store it etcd}
+                        -> Api server -> kubelet {ask the container runtime to run the container}
+                        -> container rutime -> pull image -> configure the n/w CNI -> mount volume -> create
+                        -> kubelet is contantly monioring -> api-server{ stores in etcd }
+                        -> controller monitor -> desired state  
+                                                    else create the replica images
+                        
+                        -> add-ons 
+                            1 matics server(kubelet)
+                            2 CNI - plugin
+                            3 CoreDNS
+                            4 k8s Dashboard - health of cluster
+            

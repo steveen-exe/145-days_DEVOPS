@@ -1,0 +1,7 @@
+>ps
+    used to display all running processes
+
+>top 
+    It is a real time build in task manager for linux
+    dynamic running view, system resource usage and uptime
+    

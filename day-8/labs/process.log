@@ -1,0 +1,19 @@
+@steveen-exe ➜ /workspaces/skill-up (main) $ ps
+    PID TTY          TIME CMD
+    755 pts/0    00:00:00 bash
+   2223 pts/0    00:00:00 ps
+@steveen-exe ➜ /workspaces/skill-up (main) $
+
+#top 10 cpu consuming processes ->
+    steve@CORPLPW000098:~$ ps aux --sort=%cpu | head -n 10
+    USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+    root           6  0.0  0.0   3180  2048 hvc0     Sl+  02:47   0:00 plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate
+    root         152  0.0  0.0 159348  1792 ?        Ssl  02:47   0:00 snapfuse /var/lib/snapd/snaps/kubectl_3816.snap /snap/kubectl/3816 -o ro,nodev,allow_other,suid
+    root         154  0.0  0.0 159216  1884 ?        Ssl  02:47   0:00 snapfuse /var/lib/snapd/snaps/core20_2866.snap /snap/core20/2866 -o ro,nodev,allow_other,suid
+    root         186  0.0  0.0   4472  3188 ?        Ss   02:47   0:00 /usr/sbin/cron -f -P
+    _chrony      295  0.0  0.0  12096  2524 ?        S    02:47   0:00 /usr/sbin/chronyd -n -F 1 -x
+    root         462  0.0  0.0   3184  1108 ?        Ss   02:47   0:00 /init
+    steve        512  0.0  0.0  22912  4088 ?        S    02:47   0:00 (sd-pam)
+    steve        661  0.0  0.0   7160  4420 pts/0    R+   02:49   0:00 ps aux --sort=%cpu
+    steve        662  0.0  0.0  16304  7908 pts/0    S+   02:49   0:00 head -n 10
+    steve@CORPLPW000098:~$ c
