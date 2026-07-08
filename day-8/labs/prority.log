@@ -1,0 +1,9 @@
+nice and renice control process priority — how much CPU time a process gets relative to others.
+
+Priority Scale
+
+- Range: -20 to +19
+- -20 = highest priority (gets CPU first)
+- +19 = lowest priority (gets CPU last)
+- Default = 0
+

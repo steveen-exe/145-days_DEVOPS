@@ -1,0 +1,31 @@
+you press Ctrl+Z, the process is paused/frozen — it's still in memory, just not running.
+
+Restart a Stopped Process
+
+fg      # resume it in the foreground (you can see its output)
+bg      # resume it in the background (runs silently)
+
+Simple Example
+
+python3 script.py       # start a process
+# press Ctrl+Z
+# [1]+  Stopped    python3 script.py
+
+fg                      # resumes it
+# OR
+bg                      # resumes it in background
+
+If You Have Multiple Stopped Processes
+
+jobs                    # list all stopped processes
+# [1]+  Stopped    python3 script.py
+# [2]-  Stopped    bash myscript.sh
+
+fg %1                   # resume job number 1
+fg %2                   # resume job number 2
+
+Key Point
+
+Ctrl+Z = pause (like pausing a video) → fg/bg = play again
+
+It does NOT kill the process — the process is still there in memory, just frozen. fg and bg unfreeze it.

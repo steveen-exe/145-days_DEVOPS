@@ -1,0 +1,19 @@
+steve@CORPLPW000098:~$ pgrep bash
+464
+558
+835
+
+steve@CORPLPW000098:~$ pidof bash
+835 558 464
+steve@CORPLPW000098:~$
+
+#kill a process
+kill 835
+kill -9 835#force kill
+
+#kill all 
+    killall python
+
+#Run even after logout
+    nohup python app.py &
+    

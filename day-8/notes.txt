@@ -4,4 +4,73 @@
 >top 
     It is a real time build in task manager for linux
     dynamic running view, system resource usage and uptime
-    
+
+
+
+        ┌─────┬────────────────────────────┐
+        │ Key │           Action           │
+        ├─────┼────────────────────────────┤
+        │ q   │ Quit                       │
+        ├─────┼────────────────────────────┤
+        │ k   │ Kill a process (enter PID) │
+        ├─────┼────────────────────────────┤
+        │ M   │ Sort by memory usage       │
+        ├─────┼────────────────────────────┤
+        │ P   │ Sort by CPU usage          │
+        ├─────┼────────────────────────────┤
+        │ T   │ Sort by running time       │
+        ├─────┼────────────────────────────┤
+        │ 1   │ Toggle per-CPU breakdown   │
+        ├─────┼────────────────────────────┤
+        │ u   │ Filter by user             │
+        ├─────┼────────────────────────────┤
+        │ f   │ Add/remove columns         │
+        ├─────┼────────────────────────────┤
+        │ H   │ Show individual threads    │
+        ├─────┼────────────────────────────┤
+        │ ?   │ Help                       │
+        └─────┴────────────────────────────┘
+
+        Common Flags
+
+        top -u steve        # show only processes for user "steve"
+        top -p 1234,5678    # monitor specific PIDs
+        top -d 2            # refresh every 2 seconds (default: 3)
+        top -n 5            # exit after 5 refreshes
+        top -b              # batch mode (good for scripting/logging)
+        top -i              # hide idle processes
+
+
+>htop - similar to top better readability
+
+
+> pgrep -> used to find the process-id using process name
+    pgrep <pname>
+    ##pgrep python
+    can be used to obtain pid before killing a process
+
+>pidof > ||ar command
+
+
+
+nice and renice control process priority — how much CPU time a process gets relative to others.
+Priority Scale
+- Range: -20 to +19
+- -20 = highest priority (gets CPU first)
+- +19 = lowest priority (gets CPU last)
+- Default = 0
+nice — Set priority when starting a process
+
+nice python3 script.py           # start with default nice value (+10)
+nice -n 10 python3 script.py     # start with priority +10 (low priority)
+nice -n -10 python3 script.py    # start with priority -10 (high priority, needs root)
+
+▎ Only root can set negative nice values.
+
+---
+renice — Change priority of an already running process
+
+renice -n 10 -p 1234         # set PID 1234 to priority +10
+renice -n -5 -p 1234         # set PID 1234 to -5 (needs root)
+renice -n 15 -u steve        # lower priority for ALL of steve's processes
+renice -n 10 -g groupname    # apply to entire process group
