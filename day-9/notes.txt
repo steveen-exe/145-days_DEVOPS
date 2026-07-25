@@ -1,0 +1,1307 @@
+# Day 9 — Linux Users, Groups & Access Control
+
+## Objective
+
+The goal of Day 9 is to understand how Linux manages:
+
+- Users
+- Groups
+- User IDs and Group IDs
+- File ownership
+- User switching
+- Service accounts
+- Access-related troubleshooting
+
+These concepts are important in DevOps because applications, services, CI/CD agents, containers, and Kubernetes workloads execute under specific user identities.
+
+The DevOps roadmap includes Linux permissions and ownership as part of the Linux fundamentals required before progressing into areas such as Docker, Kubernetes, CI/CD, and cloud infrastructure. :contentReference[oaicite:0]{index=0}
+
+---
+
+# 1. Linux Users
+
+Linux is a multi-user operating system.
+
+Every process runs as a particular user, and Linux uses that identity to determine what the process is allowed to access.
+
+Check the currently logged-in user:
+
+```bash
+whoami
+```
+
+Example:
+
+```text
+steve
+```
+
+Display detailed information about the current user:
+
+```bash
+id
+```
+
+Example:
+
+```text
+uid=1000(steve) gid=1000(steve) groups=1000(steve),27(sudo)
+```
+
+### Important Terms
+
+**UID — User ID**
+
+A numeric identifier assigned to a user.
+
+Example:
+
+```text
+uid=1000
+```
+
+**GID — Group ID**
+
+A numeric identifier assigned to a group.
+
+Example:
+
+```text
+gid=1000
+```
+
+Linux internally relies heavily on these numeric IDs rather than usernames.
+
+---
+
+# 2. Logged-In Users
+
+Show currently logged-in users:
+
+```bash
+who
+```
+
+For more information:
+
+```bash
+w
+```
+
+The `w` command can show information such as:
+
+- Logged-in users
+- Login time
+- Terminal
+- System uptime
+- Current activity
+- System load
+
+Useful during production troubleshooting when determining who is connected to a server.
+
+---
+
+# 3. /etc/passwd
+
+Linux user information is stored in:
+
+```text
+/etc/passwd
+```
+
+View it:
+
+```bash
+cat /etc/passwd
+```
+
+Example:
+
+```text
+steve:x:1000:1000:Steve:/home/steve:/bin/bash
+```
+
+The structure is:
+
+```text
+username:password:UID:GID:comment:home:shell
+```
+
+Breaking it down:
+
+```text
+steve
+```
+
+Username.
+
+```text
+x
+```
+
+Password information is stored separately in `/etc/shadow`.
+
+```text
+1000
+```
+
+UID.
+
+```text
+1000
+```
+
+Primary GID.
+
+```text
+Steve
+```
+
+User information/comment field.
+
+```text
+/home/steve
+```
+
+Home directory.
+
+```text
+/bin/bash
+```
+
+Login shell.
+
+---
+
+# 4. /etc/shadow
+
+Password-related information is stored in:
+
+```text
+/etc/shadow
+```
+
+View it with:
+
+```bash
+sudo cat /etc/shadow
+```
+
+Unlike `/etc/passwd`, normal users should not be able to read `/etc/shadow`.
+
+It contains information related to:
+
+- Password hashes
+- Password expiration
+- Password aging
+- Account expiration
+
+Check permissions:
+
+```bash
+ls -l /etc/shadow
+```
+
+Security principle:
+
+```text
+Passwords should never be stored as plain text.
+```
+
+---
+
+# 5. /etc/group
+
+Linux group information is stored in:
+
+```text
+/etc/group
+```
+
+View it:
+
+```bash
+cat /etc/group
+```
+
+Check your groups:
+
+```bash
+groups
+```
+
+Check another user's groups:
+
+```bash
+groups username
+```
+
+Or:
+
+```bash
+id username
+```
+
+---
+
+# 6. Creating Users
+
+Create a user:
+
+```bash
+sudo useradd devuser
+```
+
+A better option for a normal interactive user is to create the home directory too:
+
+```bash
+sudo useradd -m devuser
+```
+
+Verify:
+
+```bash
+id devuser
+```
+
+Check the account:
+
+```bash
+grep devuser /etc/passwd
+```
+
+---
+
+# 7. Setting User Passwords
+
+Set a password:
+
+```bash
+sudo passwd devuser
+```
+
+Linux will prompt for the new password.
+
+Verify that the user exists:
+
+```bash
+id devuser
+```
+
+---
+
+# 8. Deleting Users
+
+Delete a user:
+
+```bash
+sudo userdel devuser
+```
+
+This does not necessarily remove the user's home directory.
+
+To remove the user and their home directory:
+
+```bash
+sudo userdel -r devuser
+```
+
+Be careful with `-r` on production systems because user-owned data may be removed.
+
+---
+
+# 9. Linux Groups
+
+Groups allow multiple users to share access to resources.
+
+Instead of managing permissions separately for every user:
+
+```text
+User A ─┐
+User B ─┼──> devops group ──> project files
+User C ─┘
+```
+
+This makes access management easier.
+
+---
+
+# 10. Creating Groups
+
+Create a group:
+
+```bash
+sudo groupadd devops
+```
+
+Verify:
+
+```bash
+grep devops /etc/group
+```
+
+Example:
+
+```text
+devops:x:1001:
+```
+
+---
+
+# 11. Adding Users to Groups
+
+Add `devuser` to the `devops` group:
+
+```bash
+sudo usermod -aG devops devuser
+```
+
+Verify:
+
+```bash
+groups devuser
+```
+
+Or:
+
+```bash
+id devuser
+```
+
+### Important
+
+The options:
+
+```text
+-a
+```
+
+mean:
+
+```text
+append
+```
+
+and:
+
+```text
+-G
+```
+
+means:
+
+```text
+supplementary groups
+```
+
+Therefore:
+
+```bash
+usermod -aG devops devuser
+```
+
+means:
+
+> Append `devuser` to the supplementary group `devops`.
+
+Be careful not to accidentally omit `-a` when modifying supplementary groups, because existing supplementary group memberships can be replaced.
+
+---
+
+# 12. Switching Users
+
+Switch to another user:
+
+```bash
+su devuser
+```
+
+A commonly preferred form is:
+
+```bash
+su - devuser
+```
+
+The `-` starts a login shell and loads the target user's environment.
+
+Return to the previous user:
+
+```bash
+exit
+```
+
+---
+
+# 13. sudo vs su
+
+## su
+
+`su` switches your shell to another user.
+
+Example:
+
+```bash
+su - devuser
+```
+
+You then operate as `devuser` until exiting.
+
+---
+
+## sudo
+
+`sudo` executes a command with elevated or another user's privileges.
+
+Example:
+
+```bash
+sudo apt update
+```
+
+Instead of remaining root, only the specified command receives elevated privileges.
+
+For administration, using controlled `sudo` access is generally preferable to continuously operating as root.
+
+---
+
+# 14. File Ownership
+
+Every Linux file has an:
+
+```text
+Owner
+Group
+```
+
+Create a file:
+
+```bash
+touch project.txt
+```
+
+Inspect it:
+
+```bash
+ls -l project.txt
+```
+
+Example:
+
+```text
+-rw-r--r-- 1 steve devops 0 Jul 25 20:00 project.txt
+```
+
+Here:
+
+```text
+steve
+```
+
+is the owner.
+
+```text
+devops
+```
+
+is the group.
+
+---
+
+# 15. chown
+
+`chown` changes file ownership.
+
+Syntax:
+
+```bash
+chown USER FILE
+```
+
+Example:
+
+```bash
+sudo chown devuser project.txt
+```
+
+Verify:
+
+```bash
+ls -l project.txt
+```
+
+---
+
+# 16. Changing Owner and Group
+
+You can change both simultaneously:
+
+```bash
+sudo chown devuser:devops project.txt
+```
+
+Verify:
+
+```bash
+ls -l project.txt
+```
+
+Conceptually:
+
+```text
+devuser:devops
+   │       │
+ owner    group
+```
+
+---
+
+# 17. chgrp
+
+`chgrp` changes only the group ownership.
+
+Example:
+
+```bash
+sudo chgrp devops project.txt
+```
+
+Verify:
+
+```bash
+ls -l project.txt
+```
+
+Remember:
+
+```text
+chown → change owner
+
+chgrp → change group
+```
+
+---
+
+# 18. stat
+
+For more detailed information about a file:
+
+```bash
+stat project.txt
+```
+
+This provides information including:
+
+- Owner UID
+- Group GID
+- Permissions
+- File size
+- Access time
+- Modification time
+- Metadata change time
+
+This is useful during permission troubleshooting.
+
+---
+
+# 19. Service Accounts
+
+Production applications should generally avoid running as `root`.
+
+Services commonly execute using dedicated users.
+
+Examples might include:
+
+```text
+nginx
+www-data
+postgres
+mysql
+jenkins
+```
+
+Check processes:
+
+```bash
+ps aux
+```
+
+Search for a particular process:
+
+```bash
+ps -ef | grep nginx
+```
+
+You might see:
+
+```text
+www-data   1234 ...
+```
+
+This means that process is executing as `www-data`.
+
+---
+
+# 20. Why Running Applications as Root Is Dangerous
+
+Suppose an application is compromised.
+
+If it runs as:
+
+```text
+root
+```
+
+the attacker may inherit very powerful privileges.
+
+If it runs as:
+
+```text
+appuser
+```
+
+the attacker's permissions are constrained by the permissions assigned to `appuser`.
+
+This follows the:
+
+```text
+Principle of Least Privilege
+```
+
+Users and applications should receive only the permissions required to perform their job.
+
+---
+
+# 21. Production Troubleshooting — Permission Denied
+
+A common production error is:
+
+```text
+Permission denied
+```
+
+Do not immediately run:
+
+```bash
+chmod 777
+```
+
+That can hide the underlying problem and unnecessarily weaken security.
+
+Instead, troubleshoot systematically.
+
+### Step 1 — Determine the affected user
+
+```bash
+whoami
+```
+
+For an application:
+
+```bash
+ps aux
+```
+
+Determine which user the application process runs as.
+
+---
+
+### Step 2 — Check ownership
+
+```bash
+ls -l /path/to/file
+```
+
+Example:
+
+```text
+-rw------- root root application.log
+```
+
+If the application runs as:
+
+```text
+appuser
+```
+
+it may not have permission to access the file.
+
+---
+
+### Step 3 — Inspect detailed metadata
+
+```bash
+stat /path/to/file
+```
+
+Check:
+
+```text
+Owner
+Group
+Permissions
+```
+
+---
+
+### Step 4 — Check group membership
+
+```bash
+id appuser
+```
+
+or:
+
+```bash
+groups appuser
+```
+
+Determine whether the application user belongs to the required group.
+
+---
+
+### Step 5 — Correct ownership if appropriate
+
+Example:
+
+```bash
+sudo chown appuser:appgroup /path/to/file
+```
+
+Then verify:
+
+```bash
+ls -l /path/to/file
+```
+
+---
+
+# 22. DevOps Connection
+
+User and group management appears throughout DevOps.
+
+## Docker
+
+Containers execute processes under Linux users.
+
+Running everything as:
+
+```text
+root
+```
+
+increases security risk.
+
+Dockerfiles can specify:
+
+```dockerfile
+USER appuser
+```
+
+---
+
+## Kubernetes
+
+Kubernetes supports security controls such as:
+
+```yaml
+securityContext:
+  runAsNonRoot: true
+```
+
+The underlying concept is still Linux user identity and process permissions.
+
+---
+
+## CI/CD
+
+Pipeline agents such as Jenkins runners execute commands using particular operating-system users.
+
+A pipeline can fail with:
+
+```text
+Permission denied
+```
+
+because the runner doesn't have access to:
+
+```text
+Docker socket
+workspace
+deployment files
+SSH keys
+build directories
+```
+
+---
+
+## SRE
+
+During incidents, you may need to determine:
+
+```text
+Which user runs this process?
+
+Who owns this directory?
+
+Does the service user belong to the required group?
+
+Why can't the process access this file?
+```
+
+This makes Linux identity and ownership knowledge directly relevant to production debugging.
+
+---
+
+# 23. Day 9 Hands-On Lab
+
+Create a dedicated lab directory:
+
+```bash
+mkdir -p ~/skill-up/linux/day-09-users-groups
+cd ~/skill-up/linux/day-09-users-groups
+```
+
+## Task 1 — Inspect Yourself
+
+Run:
+
+```bash
+whoami
+id
+groups
+```
+
+Record:
+
+```text
+Username:
+UID:
+Primary GID:
+Groups:
+```
+
+---
+
+## Task 2 — Inspect Linux Account Files
+
+Run:
+
+```bash
+head /etc/passwd
+head /etc/group
+sudo head /etc/shadow
+```
+
+Understand the difference between all three.
+
+---
+
+## Task 3 — Create a User
+
+```bash
+sudo useradd -m devuser
+sudo passwd devuser
+```
+
+Verify:
+
+```bash
+id devuser
+grep devuser /etc/passwd
+```
+
+---
+
+## Task 4 — Create a Group
+
+```bash
+sudo groupadd devops
+```
+
+Verify:
+
+```bash
+grep devops /etc/group
+```
+
+---
+
+## Task 5 — Add User to Group
+
+```bash
+sudo usermod -aG devops devuser
+```
+
+Verify:
+
+```bash
+groups devuser
+```
+
+---
+
+## Task 6 — Create a File
+
+```bash
+touch project.txt
+ls -l project.txt
+```
+
+Observe the original ownership.
+
+---
+
+## Task 7 — Change Ownership
+
+```bash
+sudo chown devuser:devops project.txt
+```
+
+Verify:
+
+```bash
+ls -l project.txt
+```
+
+---
+
+## Task 8 — Switch User
+
+```bash
+su - devuser
+```
+
+Check:
+
+```bash
+whoami
+id
+pwd
+```
+
+Create:
+
+```bash
+touch hello.txt
+```
+
+Inspect:
+
+```bash
+ls -l hello.txt
+```
+
+Then:
+
+```bash
+exit
+```
+
+---
+
+# 24. Mini Production Scenario
+
+Imagine an application runs as:
+
+```text
+appuser
+```
+
+but logs are owned by:
+
+```text
+root:root
+```
+
+The application reports:
+
+```text
+Permission denied: /var/log/myapp/application.log
+```
+
+Your debugging flow should be:
+
+```bash
+ps aux | grep myapp
+```
+
+Determine the runtime user.
+
+Then:
+
+```bash
+ls -l /var/log/myapp/
+```
+
+Inspect the directory and file.
+
+Then:
+
+```bash
+stat /var/log/myapp/application.log
+```
+
+Check the user:
+
+```bash
+id appuser
+```
+
+If ownership is genuinely incorrect, correct it according to the application's intended access model.
+
+For example:
+
+```bash
+sudo chown appuser:appgroup /var/log/myapp/application.log
+```
+
+Do not blindly use:
+
+```bash
+chmod 777
+```
+
+---
+
+# 25. Important Commands Cheat Sheet
+
+| Command | Purpose |
+|---|---|
+| `whoami` | Current username |
+| `id` | UID, GID and groups |
+| `who` | Logged-in users |
+| `w` | Logged-in users + activity |
+| `groups` | User's groups |
+| `useradd` | Create user |
+| `userdel` | Delete user |
+| `usermod` | Modify user |
+| `passwd` | Set/change password |
+| `groupadd` | Create group |
+| `su` | Switch user |
+| `sudo` | Execute privileged command |
+| `chown` | Change ownership |
+| `chgrp` | Change group |
+| `stat` | Detailed file metadata |
+| `ps aux` | Inspect running processes |
+
+---
+
+# 26. Important Files
+
+| File | Purpose |
+|---|---|
+| `/etc/passwd` | User account information |
+| `/etc/shadow` | Password hashes and aging information |
+| `/etc/group` | Group information |
+| `/home/<user>` | User home directory |
+
+---
+
+# 27. Interview Questions
+
+### 1. What is UID?
+
+UID is the numeric identifier Linux uses to identify a user.
+
+---
+
+### 2. What is GID?
+
+GID is the numeric identifier Linux uses to identify a group.
+
+---
+
+### 3. What is `/etc/passwd`?
+
+It stores Linux user account information such as:
+
+```text
+username
+UID
+GID
+home directory
+login shell
+```
+
+---
+
+### 4. What is `/etc/shadow`?
+
+It contains protected password hashes and password-aging information.
+
+---
+
+### 5. What does this command do?
+
+```bash
+sudo usermod -aG devops steve
+```
+
+It adds `steve` to the supplementary `devops` group while preserving existing supplementary group memberships.
+
+---
+
+### 6. Difference between `chown` and `chgrp`?
+
+```text
+chown → changes owner, and can also change group
+
+chgrp → changes group ownership
+```
+
+---
+
+### 7. Why shouldn't production applications run as root?
+
+Because if the application is compromised, the attacker could inherit root-level privileges.
+
+Running under a restricted service account reduces the potential impact.
+
+---
+
+### 8. How do you troubleshoot `Permission denied`?
+
+Start with:
+
+```bash
+whoami
+id
+ls -l <file>
+stat <file>
+```
+
+For applications:
+
+```bash
+ps aux
+```
+
+Then verify:
+
+```text
+process user
+file owner
+file group
+permissions
+group membership
+```
+
+Fix the actual ownership or permission issue instead of immediately applying broad permissions.
+
+---
+
+# 28. Commands to Remember
+
+```bash
+whoami
+id
+groups
+who
+w
+
+cat /etc/passwd
+cat /etc/group
+sudo cat /etc/shadow
+
+sudo useradd -m devuser
+sudo passwd devuser
+sudo userdel -r devuser
+
+sudo groupadd devops
+sudo usermod -aG devops devuser
+
+su - devuser
+sudo <command>
+
+ls -l
+stat file.txt
+
+sudo chown devuser file.txt
+sudo chown devuser:devops file.txt
+sudo chgrp devops file.txt
+
+ps aux
+ps -ef
+```
+
+---
+
+# 29. Key Takeaways
+
+```text
+User
+ ↓
+UID
+ ↓
+Group Membership
+ ↓
+File Ownership
+ ↓
+Permissions
+ ↓
+Access Allowed / Denied
+```
+
+Remember:
+
+1. Every Linux process runs as a user.
+2. Every user has a UID.
+3. Every group has a GID.
+4. Files have both an owner and a group.
+5. `/etc/passwd` stores account information.
+6. `/etc/shadow` stores protected password information.
+7. `/etc/group` stores group information.
+8. `chown` changes ownership.
+9. `chgrp` changes group ownership.
+10. Use groups instead of giving broad permissions.
+11. Production applications should normally run with least privilege.
+12. Never use `chmod 777` as the first solution to a permission problem.
+
+---
+
+# Day 9 Completion Checklist
+
+- [ ] Understand UID and GID
+- [ ] Understand `/etc/passwd`
+- [ ] Understand `/etc/shadow`
+- [ ] Understand `/etc/group`
+- [ ] Create and delete users
+- [ ] Create groups
+- [ ] Add users to groups
+- [ ] Use `su` and `sudo`
+- [ ] Change ownership with `chown`
+- [ ] Change group with `chgrp`
+- [ ] Inspect files using `stat`
+- [ ] Understand service accounts
+- [ ] Complete permission troubleshooting lab
+- [ ] Commit Day 9 work to GitHub
+
+---
+
+# Day 9 Result
+
+After completing Day 9, you should be able to answer a production question like:
+
+> "The application is running, but it gets `Permission denied` when writing logs. How would you investigate?"
+
+Your mental model should immediately be:
+
+```text
+Process
+   ↓
+Which user?
+   ↓
+Which groups?
+   ↓
+File/directory owner?
+   ↓
+File/directory group?
+   ↓
+Permissions?
+   ↓
+Correct ownership/access
+   ↓
+Retest
+```
+
+That is the production-oriented mindset to carry forward into Docker, Kubernetes, CI/CD, and AKS.

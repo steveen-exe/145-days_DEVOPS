@@ -1,0 +1,26 @@
+personal@CORPLPW000098:~$ ls -l
+total 8
+drwxr-xr-x 2 personal personal 4096 Jul  7 03:02 Downloads
+-rw------- 1 personal personal    0 Jun 30 14:55 private.txt
+-rw-rw-r-- 1 john     personal    0 Jul 25 15:58 project.txt
+-r--r--r-- 1 personal personal    0 Jun 30 14:55 readonly.txt
+-rwxr--r-- 1 personal personal    0 Jun 30 14:55 script.sh
+drwxr-xr-x 2 personal personal 4096 Jun 30 14:56 test
+-rw-r--r-- 1 root     root        0 Jun 30 14:55 test1.txt
+-rw-r--r-- 1 personal personal    0 Jun 30 14:55 test2.txt
+
+personal@CORPLPW000098:~$ #ls
+
+personal@CORPLPW000098:~$ sudo chown personal:personal project.txt
+
+personal@CORPLPW000098:~$ ls -l
+total 8
+drwxr-xr-x 2 personal personal 4096 Jul  7 03:02 Downloads
+-rw------- 1 personal personal    0 Jun 30 14:55 private.txt
+-rw-rw-r-- 1 personal personal    0 Jul 25 15:58 project.txt
+-r--r--r-- 1 personal personal    0 Jun 30 14:55 readonly.txt
+-rwxr--r-- 1 personal personal    0 Jun 30 14:55 script.sh
+drwxr-xr-x 2 personal personal 4096 Jun 30 14:56 test
+-rw-r--r-- 1 root     root        0 Jun 30 14:55 test1.txt
+-rw-r--r-- 1 personal personal    0 Jun 30 14:55 test2.txt
+personal@CORPLPW000098:~$

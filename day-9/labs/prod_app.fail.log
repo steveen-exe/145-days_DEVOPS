@@ -1,0 +1,13 @@
+a process try to access a file & get failed.
+>check file 
+    ls -l
+
+>check processes per user
+    ps aux
+
+>check the file
+    stat file.txt
+
+>Implementing fix ->
+    sudo chown appuser:appgroup file.txt
+
