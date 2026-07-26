@@ -1,0 +1,62 @@
+personal@CORPLPW000098:~$ lsblk
+NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda    8:0    0 356.9M  1 disk
+sdb    8:16   0 159.4M  1 disk
+sdc    8:32   0     2G  0 disk [SWAP]
+sdd    8:48   0     1T  0 disk /mnt/wslg/distro
+                               /
+personal@CORPLPW000098:~$ lsblk -f
+NAME FSTYPE FSVER LABEL UUID                                 FSAVAIL FSUSE% MOUNTPOINTS
+sda  ext4   1.0
+sdb  ext4   1.0
+sdc  swap   1           7e98df92-df78-4907-83ed-3147fadb41df                [SWAP]
+sdd  ext4   1.0         88f24c99-feb0-4b93-b5d1-81554fa93fa4  953.3G     0% /mnt/wslg/distro
+                                                                            /
+personal@CORPLPW000098:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+none            3.9G     0  3.9G   0% /usr/lib/modules/6.18.33.2-microsoft-standard-WSL2
+none            3.9G  4.0K  3.9G   1% /mnt/wsl
+drivers         475G  253G  222G  54% /usr/lib/wsl/drivers
+/dev/sdd       1007G  2.4G  954G   1% /
+none            3.9G   32K  3.9G   1% /mnt/wslg
+none            3.9G     0  3.9G   0% /usr/lib/wsl/lib
+rootfs          3.9G  2.8M  3.9G   1% /init
+none            3.9G     0  3.9G   0% /dev
+none            3.9G  452K  3.9G   1% /run
+none            3.9G     0  3.9G   0% /run/lock
+none            3.9G     0  3.9G   0% /run/shm
+none            3.9G   80K  3.9G   1% /mnt/wslg/versions.txt
+none            3.9G   80K  3.9G   1% /mnt/wslg/doc
+C:\             475G  253G  222G  54% /mnt/c
+tmpfs           3.9G     0  3.9G   0% /tmp
+tmpfs           1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+tmpfs           1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+tmpfs           782M   16K  782M   1% /run/user/1000
+personal@CORPLPW000098:~$ du -h /var 2>/dev/null | sort -ht | head -20
+sort: option requires an argument -- 't'
+Try 'sort --help' for more information.
+personal@CORPLPW000098:~$ du -h /var 2>/dev/null | sort -hF | head -20
+sort: invalid option -- 'F'
+Try 'sort --help' for more information.
+personal@CORPLPW000098:~$ du -h /var 2>/dev/null | sort -hr | head -20
+920M    /var
+713M    /var/log/journal/9dd06618f7334d40827393af7c71d225
+713M    /var/log/journal
+713M    /var/log
+109M    /var/lib
+99M     /var/lib/apt/lists
+99M     /var/lib/apt
+98M     /var/cache
+96M     /var/cache/apt
+9.6M    /var/lib/dpkg
+9.0M    /var/lib/dpkg/info
+1.8M    /var/cache/debconf
+432K    /var/backups
+324K    /var/lib/systemd
+236K    /var/lib/systemd/catalog
+84K     /var/lib/dpkg/alternatives
+60K     /var/lib/systemd/deb-systemd-helper-enabled
+52K     /var/log/apt
+44K     /var/cache/fontconfig
+28K     /var/lib/pam
+personal@CORPLPW000098

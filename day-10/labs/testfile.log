@@ -1,0 +1,19 @@
+personal@CORPLPW000098:~/storage-lab$ dd if=/dev/zero of=~/storage-lab/testfile bs=1M count=100
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB, 100 MiB) copied, 0.0452747 s, 2.3 GB/s
+personal@CORPLPW000098:~/storage-lab$ ls
+testfile
+personal@CORPLPW000098:~/storage-lab$ cat testfile
+
+personal@CORPLPW000098:~/storage-lab$
+personal@CORPLPW000098:~/storage-lab$ ls -l ~/storage-lab/
+total 102400
+-rw-r--r-- 1 personal personal 104857600 Jul 26 16:44 testfile
+personal@CORPLPW000098:~/storage-lab$ du -sh ~/storage-lab/
+101M    /home/personal/storage-lab/
+personal@CORPLPW000098:~/storage-lab$ rm ~/storage-lab/testfile
+personal@CORPLPW000098:~/storage-lab$ du -sh ~/storage-lab/
+4.0K    /home/personal/storage-lab/
+personal@CORPLPW000098:~/storage-lab$ ls -l ~/storage-lab/
+total 0

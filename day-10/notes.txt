@@ -1,0 +1,372 @@
+Day 10 — Linux Filesystem & Storage Management
+Today's Objective
+
+Understand how Linux organizes storage and learn the core commands used to investigate disk usage, filesystem types, inode utilization, large directories, disks, and partitions.
+
+1. Linux Storage Architecture
+
+A useful mental model is:
+
+Physical / Virtual Disk
+        ↓
+     Partition
+        ↓
+    Filesystem
+        ↓
+    Mount Point
+        ↓
+ Files & Directories
+
+Example:
+
+/dev/sda          ← Disk
+└── /dev/sda1     ← Partition
+      │
+      └── ext4     ← Filesystem
+           │
+           └── /   ← Mount Point
+Disk
+
+A disk is the raw physical or virtual block storage device available to Linux.
+
+Examples:
+
+/dev/sda
+/dev/sdb
+/dev/nvme0n1
+
+Think of the disk as the underlying storage device before considering how its space is organized.
+
+Partition
+
+A partition is a logical boundary or slice created on a disk.
+
+Example:
+
+/dev/sda
+├── /dev/sda1
+├── /dev/sda2
+└── /dev/sda3
+
+Here /dev/sda is the disk, while /dev/sda1, /dev/sda2, and /dev/sda3 are partitions.
+
+Filesystem
+
+A filesystem defines the internal management structure and rules Linux uses to organize files and directories on storage.
+
+Common examples:
+
+ext4
+xfs
+btrfs
+
+So:
+
+Disk → Partition → Filesystem
+
+could look like:
+
+/dev/sda → /dev/sda1 → ext4
+Mount Point
+
+A mount point is the directory where a filesystem is attached to the Linux directory tree.
+
+Example:
+
+/dev/sda1 → ext4 → /
+
+Another filesystem could be mounted at:
+
+/dev/sdb1 → xfs → /data
+
+Applications then access:
+
+/data
+
+rather than directly interacting with /dev/sdb1.
+
+2. Block Usage
+
+Block usage represents the physical storage capacity consumed by files.
+
+Usually you'll think about this in:
+
+MB
+GB
+TB
+
+For example, a filesystem might have:
+
+Total: 100 GB
+Used:   80 GB
+Free:   20 GB
+
+The main command for checking filesystem capacity is:
+
+df -h
+3. Inodes
+
+An inode is a filesystem metadata structure used to track a file or directory.
+
+The important operational concept is:
+
+You can have free disk capacity but still be unable to create files if the filesystem runs out of available inodes.
+
+For example:
+
+Disk usage:   60%
+Inode usage: 100%
+
+An application attempting to create another file may fail even though many GB of storage remain.
+
+Check inode utilization with:
+
+df -i
+
+It displays information such as:
+
+Filesystem     Inodes  IUsed  IFree IUse%
+/dev/sda1      500000 490000 10000   98%
+4. Inode Limits & Behaviour
+ext4
+
+The inode count is established when the filesystem is created/formatted.
+
+A commonly used ratio is roughly:
+
+1 inode per 16 KB
+
+The important takeaway:
+
+You cannot simply increase an existing ext4 filesystem's inode count without recreating/reformatting the filesystem.
+
+XFS
+
+XFS handles inode allocation dynamically.
+
+Your note records its default metadata/inode allocation limit as up to approximately 25% of total disk space.
+
+Btrfs
+
+Btrfs handles metadata dynamically rather than relying on the same fixed inode-table model as ext4.
+
+Operational comparison
+ext4
+└── inode allocation established at filesystem creation
+
+XFS
+└── dynamic inode allocation
+
+Btrfs
+└── dynamic metadata allocation
+5. Essential Commands
+df -h — Filesystem Disk Usage
+df -h
+
+df means disk free.
+
+-h means human-readable.
+
+Example:
+
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        50G   30G   20G  60% /
+
+Use this when you want to know:
+
+How large is the filesystem?
+How much is used?
+How much is available?
+What percentage is used?
+Where is it mounted?
+df -Th — Filesystem Type
+df -Th
+
+-T adds the filesystem type.
+
+Example:
+
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/sda1      ext4   50G   30G   20G  60% /
+
+Useful when you need to determine whether you're working with:
+
+ext4
+xfs
+btrfs
+tmpfs
+...
+df -i — Inode Utilization
+df -i
+
+Use this when:
+
+Disk has available space
+        ↓
+Application cannot create files
+        ↓
+"No space left on device"
+        ↓
+Check inode utilization
+
+This is particularly useful when a system generates very large numbers of small files.
+
+6. Finding Large Directories
+
+df tells you which filesystem is full.
+
+du helps determine what is consuming that space.
+
+Example:
+
+du -h /var 2>/dev/null | sort -hr | head -20
+
+Break it down:
+
+du -h /var
+
+Calculate disk usage under /var using human-readable sizes.
+
+2>/dev/null
+
+Redirect stderr (file descriptor 2) to /dev/null.
+
+In practice, this hides errors such as permission-denied messages.
+
+Think of /dev/null as a black hole:
+
+Error output
+     ↓
+ /dev/null
+     ↓
+ discarded
+
+Next:
+
+sort -hr
+
+-h understands human-readable sizes.
+
+-r reverses the ordering so the largest values appear first.
+
+Finally:
+
+head -20
+
+Show only the first 20 results.
+
+Combined:
+
+du -h /var 2>/dev/null | sort -hr | head -20
+
+means:
+
+Calculate usage under /var, hide error output, sort from largest to smallest, and display the top 20 results.
+
+7. Inspect Disks and Partitions
+
+Use:
+
+lsblk
+
+lsblk means list block devices.
+
+Typical structure:
+
+NAME   SIZE TYPE MOUNTPOINT
+sda     50G disk
+├─sda1   1G part /boot
+└─sda2  49G part /
+
+This immediately shows the hierarchy:
+
+sda
+│
+├── Disk
+│
+└── sda1 / sda2
+       │
+       └── Partitions
+
+This makes lsblk one of the first commands to use when understanding how a Linux machine's storage is structured.
+
+Production Troubleshooting Flow
+
+If you receive:
+
+ALERT: Filesystem usage > 90%
+
+Your initial investigation can be:
+
+df -h
+
+Identify the affected filesystem.
+
+Then:
+
+df -Th
+
+Identify its filesystem type.
+
+Check whether inode exhaustion is involved:
+
+df -i
+
+Inspect the underlying devices:
+
+lsblk
+
+Then locate storage consumers:
+
+du -h /var 2>/dev/null | sort -hr | head -20
+
+So remember:
+
+Disk alert
+   ↓
+df -h
+   ↓
+Which filesystem is full?
+   ↓
+df -i
+   ↓
+Disk capacity or inode problem?
+   ↓
+lsblk
+   ↓
+Understand disk/partition structure
+   ↓
+du
+   ↓
+Find storage consumer
+Day 10 Command Cheat Sheet
+Command	Purpose
+df -h	Check filesystem capacity in human-readable format
+df -Th	Check capacity + filesystem type
+df -i	Check inode utilization
+du -h /var	Analyze directory disk usage
+sort -hr	Sort human-readable sizes largest first
+head -20	Show first 20 results
+2>/dev/null	Discard error output
+lsblk	Inspect block devices and partitions
+Key takeaway
+
+Don't think of Linux storage as simply "disk space."
+
+Think:
+
+Disk
+ ↓
+Partition
+ ↓
+Filesystem
+ ↓
+Mount Point
+ ↓
+Block usage + inode usage
+ ↓
+Files / Directories
+
+And for production debugging:
+
+df tells you where the storage problem is; du helps tell you what's consuming the storage.

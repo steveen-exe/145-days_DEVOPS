@@ -1,0 +1,89 @@
+personal@CORPLPW000098:~$ findmnt
+TARGET           SOURCE FSTYPE  OPTIONS
+/                /dev/sdd
+│                       ext4    rw,relatime,discard,errors=remount-ro,data=ordered
+├─/usr/lib/modules/6.18.33.2-microsoft-standard-WSL2
+│                none   overlay rw,nosuid,nodev,noatime,lowerdir=/modules,upperdir=
+├─/mnt/wsl       none   tmpfs   rw,relatime
+├─/usr/lib/wsl/drivers
+│                drivers
+│                       9p      ro,nosuid,nodev,noatime,aname=drivers;fmask=222;dma
+├─/mnt/wslg      none   tmpfs   rw,relatime
+│ ├─/mnt/wslg/distro
+│ │              /dev/sdd
+│ │                     ext4    ro,relatime,discard,errors=remount-ro,data=ordered
+│ ├─/mnt/wslg/versions.txt
+│ │              none[/etc/versions.txt]
+│ │                     overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw
+│ ├─/mnt/wslg/doc
+│ │              none[/usr/share/doc]
+│ │                     overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw
+│ └─/mnt/wslg/run/user/1000
+│                tmpfs  tmpfs   rw,nosuid,nodev,relatime,size=799908k,nr_inodes=199
+├─/usr/lib/wsl/lib
+│                none   overlay rw,nosuid,nodev,noatime,lowerdir=/gpu_lib_packaged:
+├─/init          rootfs[/init]
+│                       rootfs  ro,size=3993792k,nr_inodes=998448
+├─/dev           none   devtmpf rw,nosuid,relatime,size=3993792k,nr_inodes=998448,m
+│ ├─/dev/pts     devpts devpts  rw,nosuid,noexec,noatime,gid=5,mode=620,ptmxmode=00
+│ ├─/dev/shm     none   tmpfs   rw,nosuid,nodev,noatime
+│ ├─/dev/mqueue  mqueue mqueue  rw,nosuid,nodev,noexec,relatime
+│ └─/dev/hugepages
+│                hugetlbfs
+│                       hugetlb rw,nosuid,nodev,relatime,pagesize=2M
+├─/sys           sysfs  sysfs   rw,nosuid,nodev,noexec,noatime
+│ ├─/sys/fs/cgroup
+│ │              cgroup2
+│ │                     cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate
+│ ├─/sys/kernel/debug
+│ │              debugfs
+│ │                     debugfs rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/kernel/tracing
+│ │              tracefs
+│ │                     tracefs rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/kernel/config
+│ │              configfs
+│ │                     configf rw,nosuid,nodev,noexec,relatime
+│ └─/sys/fs/fuse/connections
+│                fusectl
+│                       fusectl rw,nosuid,nodev,noexec,relatime
+├─/proc          proc   proc    rw,nosuid,nodev,noexec,noatime
+│ └─/proc/sys/fs/binfmt_misc
+│                binfmt_misc
+│                       binfmt_ rw,relatime
+├─/run           none   tmpfs   rw,nosuid,nodev,mode=755
+│ ├─/run/lock    none   tmpfs   rw,nosuid,nodev,noexec,noatime
+│ ├─/run/shm     none   tmpfs   rw,nosuid,nodev,noatime
+│ ├─/run/user    none   tmpfs   rw,nosuid,nodev,noexec,noatime,mode=755
+│ │ └─/run/user  none[/run/user]
+│ │   │                 tmpfs   rw,relatime
+│ │   └─/run/user/1000
+│ │              tmpfs  tmpfs   rw,nosuid,nodev,relatime,size=799908k,nr_inodes=199
+│ ├─/run/credentials/systemd-journald.service
+│ │              tmpfs  tmpfs   ro,nosuid,nodev,noexec,relatime,nosymfollow,size=10
+│ └─/run/credentials/getty@tty1.service
+│                tmpfs  tmpfs   ro,nosuid,nodev,noexec,relatime,nosymfollow,size=10
+├─/tmp/.X11-unix none[/.X11-unix]
+│                       tmpfs   ro,relatime
+├─/mnt/c         C:\    9p      rw,noatime,aname=drvfs;path=C:\;uid=1000;gid=1000;s
+└─/tmp           tmpfs  tmpfs   rw,nosuid,nodev,size=3999552k,nr_inodes=1048576
+  └─/tmp/.X11-unix
+                 none[/.X11-unix]
+                        tmpfs   ro,relatime
+personal@CORPLPW000098:~$
+                Alert
+                ↓
+                df -h
+                ↓
+                Identify filesystem
+                ↓
+                du
+                ↓
+                Identify large directory
+                ↓
+                find / logs
+                ↓
+                Identify root cause
+                ↓
+                Clean / rotate / resize
+
