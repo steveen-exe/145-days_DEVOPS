@@ -1,0 +1,28 @@
+Day 11 – Linux Storage Management (LVM) 
+Today we'll move from traditional partitions to Logical Volume Manager (LVM).
+ This is one of the most important Linux storage topics for DevOps, SRE, and Cloud Engineers
+ because production servers often use LVM for flexible storage management.
+
+ -it create a virtual storage pool that can grow srink / span accross multiple physical disk.
+ without LVM->
+Disk
+ └── Partition
+      └── Filesystem
+#if the partition becomes full it is difficult to expand, may require downtime and somethimes it is impossible.
+-the virtual storage pool thay is created by lvm that solved the problem 
+
+Architecture ->
+        Disk(brick)
+        ↓
+        Physical Volume (PV) - prepared brick
+        ↓
+        Volume Group (VG) - box of brickes
+        ↓
+        Logical Volume (LV) wall
+        ↓
+        Filesystempain on wall
+        ↓
+        Mount Point
+
+PV -> Vg(PV1,PV2....PVn)-> top(Logical Volume) -> Mount to use as the storage for the users 
+Don't allocate all disk space to logical vol. -> left some space for future allocations
