@@ -26,3 +26,22 @@ Architecture ->
 
 PV -> Vg(PV1,PV2....PVn)-> top(Logical Volume) -> Mount to use as the storage for the users 
 Don't allocate all disk space to logical vol. -> left some space for future allocations
+
+step 1: create a physical volume -> PV creation
+        /dev/sdb
+        /dev/sdc   >> sudo pvcreate <partition-name> #sudo pvcreate /dev/sdb
+        ....
+
+        #display::::::::::::::::::sudo pvs
+                                  sudo pvdisplay
+         Running pvcreate stamps an LVM label onto the disk.
+        This prepares it to be combined with other disks. 
+
+step 2: setpup volume Group
+        A volume Group is a giant pool of storage that is created by companing 2/--more volume groups
+        Disk1 = 20 GB
+        Disk2 = 30 GB
+  
+        create volume-group -> 50GB 
+        ## sudo vgcreate data_vg /dev/sdb
+
