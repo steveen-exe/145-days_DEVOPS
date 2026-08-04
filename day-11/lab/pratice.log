@@ -1,0 +1,179 @@
+=========================================
+Day 11 - Linux Storage Management (LVM)
+Lab Log
+Date: YYYY-MM-DD
+Host: ubuntu
+=========================================
+
+$ lsblk
+
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   50G  0 disk
+├─sda1   8:1    0    1G  0 part /boot
+└─sda2   8:2    0   49G  0 part /
+sdb      8:16   0   20G  0 disk
+
+----------------------------------------------------
+Step 1 - Create Physical Volume
+----------------------------------------------------
+
+$ sudo pvcreate /dev/sdb
+
+Physical volume "/dev/sdb" successfully created.
+
+$ sudo pvs
+
+PV         VG   Fmt  Attr PSize   PFree
+/dev/sdb        lvm2 ---   20.00g 20.00g
+
+$ sudo pvdisplay
+
+--- Physical volume ---
+PV Name               /dev/sdb
+VG Name
+PV Size               20.00 GiB
+Allocatable           yes
+
+----------------------------------------------------
+Step 2 - Create Volume Group
+----------------------------------------------------
+
+$ sudo vgcreate dev_vg /dev/sdb
+
+Volume group "dev_vg" successfully created
+
+$ sudo vgs
+
+VG      #PV #LV #SN Attr   VSize   VFree
+dev_vg    1   0   0 wz--n- 20.00g 20.00g
+
+$ sudo vgdisplay
+
+--- Volume group ---
+VG Name               dev_vg
+VG Size               20.00 GiB
+Free PE / Size        20.00 GiB
+
+----------------------------------------------------
+Step 3 - Create Logical Volume
+----------------------------------------------------
+
+$ sudo lvcreate -L 5G -n data_lv dev_vg
+
+Logical volume "data_lv" created.
+
+$ sudo lvs
+
+LV       VG      Attr       LSize
+data_lv  dev_vg  -wi-a----- 5.00g
+
+$ sudo lvdisplay
+
+--- Logical volume ---
+LV Path                /dev/dev_vg/data_lv
+LV Size                5.00 GiB
+
+----------------------------------------------------
+Step 4 - Create Filesystem
+----------------------------------------------------
+
+$ sudo mkfs.ext4 /dev/dev_vg/data_lv
+
+Creating filesystem with 1310720 4k blocks...
+Writing inode tables: done
+Creating journal: done
+Writing superblocks and filesystem accounting information: done
+
+----------------------------------------------------
+Step 5 - Create Mount Point
+----------------------------------------------------
+
+$ sudo mkdir /data
+
+----------------------------------------------------
+Step 6 - Mount Filesystem
+----------------------------------------------------
+
+$ sudo mount /dev/dev_vg/data_lv /data
+
+$ df -h
+
+Filesystem                  Size Used Avail Use% Mounted on
+/dev/sda2                    49G  12G   35G  26% /
+/dev/mapper/dev_vg-data_lv  4.9G   24M  4.6G   1% /data
+
+----------------------------------------------------
+Verify Storage Layout
+----------------------------------------------------
+
+$ lsblk
+
+NAME                     SIZE TYPE MOUNTPOINT
+sda                       50G disk
+├─sda1                     1G part /boot
+└─sda2                    49G part /
+sdb                       20G disk
+└─dev_vg-data_lv           5G lvm  /data
+
+----------------------------------------------------
+Simulate Storage Expansion
+----------------------------------------------------
+
+New disk attached:
+
+/dev/sdc (20G)
+
+$ sudo pvcreate /dev/sdc
+
+Physical volume "/dev/sdc" successfully created.
+
+$ sudo vgextend dev_vg /dev/sdc
+
+Volume group "dev_vg" successfully extended.
+
+$ sudo vgs
+
+VG      #PV #LV Attr   VSize   VFree
+dev_vg    2   1 wz--n- 40.00g 35.00g
+
+----------------------------------------------------
+Extend Logical Volume
+----------------------------------------------------
+
+$ sudo lvextend -L +5G /dev/dev_vg/data_lv
+
+Size of logical volume dev_vg/data_lv changed
+Logical volume successfully resized.
+
+----------------------------------------------------
+Resize Filesystem
+----------------------------------------------------
+
+$ sudo resize2fs /dev/dev_vg/data_lv
+
+resize2fs 1.46.5
+Filesystem resized successfully.
+
+----------------------------------------------------
+Verify New Capacity
+----------------------------------------------------
+
+$ df -h
+
+Filesystem                  Size Used Avail Use% Mounted on
+/dev/mapper/dev_vg-data_lv  9.8G   24M  9.2G   1% /data
+
+----------------------------------------------------
+Useful Commands
+----------------------------------------------------
+
+$ pvs
+$ pvdisplay
+
+$ vgs
+$ vgdisplay
+
+$ lvs
+$ lvdisplay
+
+$ sudo lvmdiskscan
