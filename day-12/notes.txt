@@ -1,0 +1,516 @@
+# Day 12 — Linux Archiving, Compression & Backup
+
+## Objective
+
+After learning **partitions → filesystems → LVM**, the next production skill is **archiving, compression, and backing up data**.
+
+Today's objectives:
+
+* Create archives using `tar`
+* Compress and extract files using `gzip`, `bzip2`, and `xz`
+* Create and restore backups
+* Synchronize directories using `rsync`
+* Verify backup integrity
+
+---
+
+# 1. Archive
+
+An **archive** combines multiple files and directories into a single file.
+
+An archive **does not reduce the size by itself**.
+
+Example:
+
+```bash
+tar -cf backup.tar myfolder/
+```
+
+Here:
+
+* `tar` → archive utility
+* `-c` → create archive
+* `-f` → specify archive filename
+* `backup.tar` → output archive
+* `myfolder/` → source directory
+
+### Create an archive
+
+```bash
+tar -cvf backup.tar project/
+```
+
+`-v` means verbose, so `tar` displays the files being added.
+
+### Extract an archive
+
+```bash
+tar -xvf backup.tar
+```
+
+* `-x` → extract
+* `-v` → verbose
+* `-f` → archive file
+
+---
+
+# 2. Compression
+
+**Compression reduces the size of data.**
+
+Common Linux compression tools:
+
+* `gzip`
+* `bzip2`
+* `xz`
+
+When used with `tar`, they are commonly represented by:
+
+| Compression | `tar` option | General characteristic             |
+| ----------- | ------------ | ---------------------------------- |
+| gzip        | `-z`         | Fast, lower compression            |
+| bzip2       | `-j`         | Slower, better compression         |
+| xz          | `-J`         | Highest compression, more CPU/time |
+
+### gzip
+
+Generally the fastest of the three, with a larger resulting file compared with stronger compression methods.
+
+### bzip2
+
+A middle ground between speed and compression ratio.
+
+### xz
+
+Generally provides the smallest file size, but requires more CPU and time.
+
+---
+
+# 3. Create Compressed Archives
+
+## gzip
+
+```bash
+tar -czvf backup.tar.gz project/
+```
+
+* `-c` → create
+* `-z` → gzip compression
+* `-v` → verbose
+* `-f` → filename
+
+Extract:
+
+```bash
+tar -xzvf backup.tar.gz
+```
+
+---
+
+## bzip2
+
+```bash
+tar -cjvf backup.tar.bz2 project/
+```
+
+Extract:
+
+```bash
+tar -xjvf backup.tar.bz2
+```
+
+---
+
+## xz
+
+```bash
+tar -cJvf backup.tar.xz project/
+```
+
+Extract:
+
+```bash
+tar -xJvf backup.tar.xz
+```
+
+---
+
+# 4. gzip
+
+`gzip` normally compresses an individual file.
+
+```bash
+gzip file.log
+```
+
+This produces:
+
+```text
+file.log.gz
+```
+
+To decompress:
+
+```bash
+gunzip file.log.gz
+```
+
+The important distinction is:
+
+```text
+tar   → combines files
+gzip  → compresses data
+```
+
+Together:
+
+```bash
+tar + gzip
+     ↓
+backup.tar.gz
+```
+
+---
+
+# 5. tar vs gzip vs zip
+
+| Tool   | What it does                 | Multi-file support | Preserves directory structure | Common platform |
+| ------ | ---------------------------- | ------------------ | ----------------------------- | --------------- |
+| `tar`  | Groups files into an archive | Yes                | Yes                           | Linux/Unix      |
+| `gzip` | Compresses a file            | No, by itself      | No, by itself                 | Linux/Unix      |
+| `zip`  | Groups + compresses          | Yes                | Yes                           | Linux/Windows   |
+
+`zip` can therefore perform both operations in one step.
+
+Create a ZIP archive:
+
+```bash
+zip -r backup.zip project/
+```
+
+Extract:
+
+```bash
+unzip backup.zip
+```
+
+---
+
+# 6. rsync — Remote Synchronization
+
+`rsync` (**Remote Sync**) is a Linux/Unix command-line tool used to:
+
+* Copy files
+* Back up data
+* Synchronize directories
+* Transfer data between systems
+
+Example:
+
+```bash
+rsync -av project/ backup/
+```
+
+Remote synchronization:
+
+```bash
+rsync -av project/ user@server:/backup/
+```
+
+Here:
+
+* `-a` → archive mode
+* `-v` → verbose
+
+---
+
+# 7. Why rsync Instead of `cp`?
+
+One of the important features of `rsync` is its **delta-transfer approach**.
+
+It compares the source and destination and avoids retransferring data that is already synchronized.
+
+For example:
+
+```text
+First backup:
+
+project/
+ ├── app.log
+ ├── error.log
+ └── config.yaml
+
+        ↓ rsync
+
+backup/
+ ├── app.log
+ ├── error.log
+ └── config.yaml
+```
+
+Later, if only `app.log` changes:
+
+```text
+project/
+ ├── app.log       ← modified
+ ├── error.log     ← unchanged
+ └── config.yaml   ← unchanged
+```
+
+`rsync` can avoid unnecessarily transferring the unchanged files.
+
+This makes it useful for large directories and recurring backups.
+
+---
+
+# 8. Key rsync Capabilities
+
+### Differential synchronization
+
+Only changed/new data needs to be synchronized.
+
+### Resumable transfers
+
+Useful when transferring large amounts of data over unreliable networks.
+
+### Remote syncing
+
+`rsync` can work over SSH:
+
+```bash
+rsync -av project/ user@server:/backup/
+```
+
+### Directory mirroring
+
+`rsync` can also be configured to remove destination files that no longer exist in the source.
+
+Example:
+
+```bash
+rsync -av --delete project/ backup/
+```
+
+**Be careful with `--delete`** because files existing only in the destination can be removed.
+
+---
+
+# 9. Backups
+
+A common backup workflow is:
+
+```text
+Application Data
+       ↓
+    rsync
+       ↓
+Backup Storage
+```
+
+For example, every night a backup process can synchronize a directory.
+
+Instead of copying everything again:
+
+```text
+Day 1
+100 GB → backup
+
+Day 2
+Only changed data → backup
+
+Day 3
+Only changed data → backup
+```
+
+This can save considerable time and bandwidth compared with repeatedly creating complete copies.
+
+---
+
+# 10. Comparing Files
+
+To compare two files:
+
+```bash
+diff file1 file2
+```
+
+For compressed files, tools such as `zdiff` can compare the contents without manually extracting them.
+
+Example:
+
+```bash
+zdiff file1.gz file2.gz
+```
+
+The important idea is:
+
+```text
+Source
+  ↓
+Backup
+  ↓
+Compare
+  ↓
+Verify
+```
+
+---
+
+# 11. Checksum & Backup Integrity
+
+A checksum can be generated for a backup file:
+
+```bash
+sha256sum backup.tar.gz
+```
+
+Example:
+
+```text
+<hash-value>  backup.tar.gz
+```
+
+After downloading or transferring the backup, generate the checksum again:
+
+```bash
+sha256sum backup.tar.gz
+```
+
+Compare the two values.
+
+```text
+Original backup checksum
+        ↓
+      Compare
+        ↓
+Downloaded backup checksum
+```
+
+### If they match
+
+The file contents are unchanged.
+
+### If they don't match
+
+The file may have:
+
+* Become corrupted
+* Been modified
+* Been incompletely transferred
+* Been replaced by another file
+
+The checksum therefore provides a way to **verify the integrity of the backup**.
+
+---
+
+# 12. Production Backup Workflow
+
+A simplified production workflow looks like:
+
+```text
+Application Data
+       │
+       ▼
+   Archive
+    (tar)
+       │
+       ▼
+  Compress
+ (gzip/xz)
+       │
+       ▼
+ Backup Storage
+       │
+       ▼
+   Checksum
+       │
+       ▼
+ Integrity Verification
+```
+
+For recurring directory synchronization:
+
+```text
+Production Server
+       │
+       │ rsync
+       ▼
+Backup Server
+       │
+       ▼
+Integrity Verification
+```
+
+---
+
+# 13. Important Commands — Quick Reference
+
+```bash
+# Create archive
+tar -cvf backup.tar project/
+
+# Extract archive
+tar -xvf backup.tar
+
+# gzip
+tar -czvf backup.tar.gz project/
+tar -xzvf backup.tar.gz
+
+# bzip2
+tar -cjvf backup.tar.bz2 project/
+tar -xjvf backup.tar.bz2
+
+# xz
+tar -cJvf backup.tar.xz project/
+tar -xJvf backup.tar.xz
+
+# gzip individual file
+gzip file.log
+gunzip file.log.gz
+
+# ZIP
+zip -r backup.zip project/
+unzip backup.zip
+
+# rsync
+rsync -av project/ backup/
+
+# Remote rsync
+rsync -av project/ user@server:/backup/
+
+# Compare files
+diff file1 file2
+
+# SHA-256 checksum
+sha256sum backup.tar.gz
+```
+
+---
+
+# Production Perspective
+
+As a DevOps/SRE engineer, don't think of `tar`, `gzip`, and `rsync` as just Linux commands.
+
+Think in terms of the **backup lifecycle**:
+
+```text
+Create
+  ↓
+Archive
+  ↓
+Compress
+  ↓
+Transfer
+  ↓
+Store
+  ↓
+Verify
+  ↓
+Restore
+```
+
+The most important operational concept is:
+
+> **A backup is not useful until you can verify and restore it.**
+
+**Day 12 complete:** Archiving → Compression → Backup → Synchronization → Integrity Verification.
