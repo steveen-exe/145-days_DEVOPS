@@ -24,4 +24,3 @@ def test_greet_valid(client):
 def test_greet_invalid(client):
     resp = client.get("/api/greet/steve123")
     assert resp.status_code == 400
-
