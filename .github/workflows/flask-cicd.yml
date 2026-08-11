@@ -12,7 +12,7 @@ on:
       - 'ci-cd-flask-demo/**'
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}/flask-cicd-demo
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/145-days-devops-flask-demo
   PROJECT_DIR: ci-cd-flask-demo
   REGISTRY: ghcr.io
 
