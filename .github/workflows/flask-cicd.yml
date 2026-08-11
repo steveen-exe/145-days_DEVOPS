@@ -64,11 +64,11 @@ jobs:
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
-         scan-type: fs
-         scan-ref: ${{ env.PROJECT_DIR }}
-         severity: HIGH,CRITICAL
-         exit-code: '1'
-         scanners: vuln,secret  # Explicitly enable vulnerability scanning
+          scan-type: fs
+          scan-ref: ${{ env.PROJECT_DIR }}
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          scanners: vuln,secr
 
   # ---------- 4. BUILD & PUSH IMAGE ----------
   build-and-push:
