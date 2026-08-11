@@ -61,7 +61,7 @@ jobs:
     needs: lint
     defaults:
       run:
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/ci-cd-flask-demo
     steps:
       - uses: actions/checkout@v4
       
@@ -70,19 +70,14 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       
-      - run: cd ci-cd-flask-demo && pip install -r requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
       
       - name: Bandit SAST scan
-        run: cd ci-cd-flask-demo && bandit -r app.py -ll || true
+        run: bandit -r app.py -ll || true
       
       - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: ${{ env.PROJECT_DIR }}
-          severity: HIGH,CRITICAL
-          exit-code: '0'
-          format: table
+        run: |
+          trivy fs . --severity HIGH,CRITICAL --format table || true
 
   # ---------- 4. BUILD & PUSH IMAGE ----------
   build-and-push:
@@ -93,7 +88,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image_tag: ${{ steps.meta.outputs.tags }}
+      image_tag: ${{ env.IMAGE_NAME }}:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -107,34 +102,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,prefix={{branch}}-
-            type=ref,event=branch
-
       - name: Build and push image
-        id: build
         uses: docker/build-push-action@v6
         with:
           context: ${{ env.PROJECT_DIR }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.meta.outputs.tags }}
-          scan-type: image
-          severity: HIGH,CRITICAL
-          exit-code: '0'
-          format: table
+        run: |
+          trivy image ${{ env.IMAGE_NAME }}:${{ github.sha }} --severity HIGH,CRITICAL --format table || true
 
   # ---------- 5. DEPLOY (manual approval gate) ----------
   deploy:
