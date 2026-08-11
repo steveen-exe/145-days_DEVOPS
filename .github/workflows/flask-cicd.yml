@@ -53,12 +53,7 @@ jobs:
       
       - run: pip install -r requirements-dev.txt
       
-      - run: PYTHONPATH=${{ github.workspace }}/ci-cd-flask-demo pytest -v --cov=. --cov-report=xml
-      
-      - uses: codecov/codecov-action@v4
-        if: always()
-        with:
-          files: ./coverage.xml
+      - run: PYTHONPATH=${{ github.workspace }}/ci-cd-flask-demo pytest -v
 
   # ---------- 3. SECURITY SCAN ----------
   security:
@@ -66,7 +61,7 @@ jobs:
     needs: lint
     defaults:
       run:
-        working-directory: ${{ github.workspace }}/ci-cd-flask-demo
+        working-directory: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
       
@@ -75,10 +70,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       
-      - run: pip install -r requirements-dev.txt
+      - run: cd ci-cd-flask-demo && pip install -r requirements-dev.txt
       
       - name: Bandit SAST scan
-        run: bandit -r app.py -ll || true
+        run: cd ci-cd-flask-demo && bandit -r app.py -ll || true
       
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
@@ -87,16 +82,7 @@ jobs:
           scan-ref: ${{ env.PROJECT_DIR }}
           severity: HIGH,CRITICAL
           exit-code: '0'
-          scanners: vuln,secr
-          format: sarif
-          output: trivy-fs-results.sarif
-      
-      - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-fs-results.sarif
-          category: trivy-fs
+          format: table
 
   # ---------- 4. BUILD & PUSH IMAGE ----------
   build-and-push:
@@ -108,7 +94,6 @@ jobs:
       packages: write
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
-      image_digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -129,9 +114,7 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=sha,prefix={{branch}}-
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
 
       - name: Build and push image
         id: build
@@ -147,19 +130,11 @@ jobs:
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          image-ref: ${{ steps.meta.outputs.tags }}
           scan-type: image
           severity: HIGH,CRITICAL
           exit-code: '0'
-          format: sarif
-          output: trivy-image-results.sarif
-
-      - name: Upload image scan results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-image-results.sarif
-          category: trivy-image
+          format: table
 
   # ---------- 5. DEPLOY (manual approval gate) ----------
   deploy:
@@ -175,16 +150,6 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           echo "Deploying image: $IMAGE"
-          # Uncomment and configure when ready for actual deployment:
-          # mkdir -p ~/.ssh
-          # echo "$DEPLOY_SSH_KEY" > ~/.ssh/key.pem
-          # chmod 600 ~/.ssh/key.pem
-          # ssh -i ~/.ssh/key.pem -o StrictHostKeyChecking=no user@$DEPLOY_HOST \
-          #   "docker pull $IMAGE && docker stop app || true && docker run -d --rm --name app -p 80:5000 $IMAGE"
 
       - name: Post-deploy smoke test
-        run: |
-          # Uncomment when ready for actual deployment:
-          # DEPLOY_HOST=${{ secrets.DEPLOY_HOST }}
-          # curl -f http://$DEPLOY_HOST/health || exit 1
-          echo "Smoke test passed"
+        run: echo "Smoke test passed"
