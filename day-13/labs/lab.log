@@ -1,0 +1,37 @@
+===== DAY 13 NETWORKING LAB =====
+Monday 24 August 2026 11:05:11 PM IST
+
+===== INTERFACES =====
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether e8:fb:1c:cc:db:9f brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.6/24 brd 192.168.1.255 scope global dynamic noprefixroute wlan0
+       valid_lft 86130sec preferred_lft 86130sec
+    inet6 fe80::eafb:1cff:fecc:db9f/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
+    link/ether 56:63:cf:c0:ea:de brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+
+===== ROUTING =====
+default via 192.168.1.1 dev wlan0 proto dhcp src 192.168.1.6 metric 600 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.6 metric 600 
+
+===== LISTENING PORTS =====
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      1024         0.0.0.0:8834       0.0.0.0:*   
+LISTEN 0      128        127.0.0.1:5939       0.0.0.0:*   
+LISTEN 0      200        127.0.0.1:5432       0.0.0.0:*   
+LISTEN 0      4096       127.0.0.1:34973      0.0.0.0:*   
+LISTEN 0      10           0.0.0.0:7070       0.0.0.0:*   
+LISTEN 0      511        127.0.0.1:36103      0.0.0.0:*    users:(("code",pid=32245,fd=49))
+LISTEN 0      1024            [::]:8834          [::]:*   
+LISTEN 0      200            [::1]:5432          [::]:*   
+LISTEN 0      10              [::]:7070          [::]:*   

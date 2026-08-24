@@ -1,0 +1,940 @@
+# Day 13 – Linux Networking Fundamentals
+
+## Objective
+
+Linux networking is a core foundation for DevOps, SRE, Cloud, and Kubernetes troubleshooting. Today focuses on understanding how Linux systems communicate, how traffic is routed, how services use ports, and how to debug connectivity issues systematically.
+
+### Learning Objectives
+
+* Understand network interfaces
+* Understand IPv4 addresses
+* Learn private and public IP concepts
+* Understand MAC addresses
+* Learn default gateways and routing
+* Understand ports and sockets
+* Learn TCP and UDP basics
+* Inspect listening services
+* Perform basic network troubleshooting
+* Connect Linux networking concepts to Kubernetes and AKS
+
+---
+
+# 1. What is a Network?
+
+A network allows computers and systems to communicate with each other.
+
+Example:
+
+```text
+Laptop
+   |
+   | Wi-Fi
+   |
+Router
+   |
+Internet
+   |
+Cloud Server
+   |
+Application
+```
+
+In a production Kubernetes environment:
+
+```text
+Client
+   |
+Load Balancer
+   |
+Ingress
+   |
+Kubernetes Service
+   |
+Pod
+   |
+Database
+```
+
+Most production connectivity issues are related to one or more networking layers.
+
+Common errors include:
+
+```text
+Connection refused
+Connection timed out
+DNS resolution failed
+No route to host
+Network unreachable
+```
+
+---
+
+# 2. Network Interface
+
+A network interface is the connection point through which a Linux system communicates with a network.
+
+Common interface names:
+
+```text
+eth0
+ens33
+enp0s3
+wlan0
+```
+
+## View Network Interfaces
+
+```bash
+ip link
+```
+
+View IP address details:
+
+```bash
+ip addr
+```
+
+Short form:
+
+```bash
+ip a
+```
+
+Example output:
+
+```text
+2: eth0:
+    inet 192.168.1.20/24
+```
+
+This means:
+
+```text
+Interface: eth0
+IP Address: 192.168.1.20
+CIDR: /24
+```
+
+---
+
+# 3. IPv4 Address
+
+An IPv4 address is a logical address used to identify a device on a network.
+
+Example:
+
+```text
+192.168.1.20
+```
+
+An IPv4 address contains four octets:
+
+```text
+192.168.1.20
+```
+
+Each octet ranges from:
+
+```text
+0 to 255
+```
+
+IPv4 addresses are 32 bits in total.
+
+---
+
+# 4. Private IP Addresses
+
+Private IP addresses are used inside internal networks.
+
+Private IPv4 ranges:
+
+```text
+10.0.0.0/8
+```
+
+```text
+172.16.0.0/12
+```
+
+```text
+192.168.0.0/16
+```
+
+Examples:
+
+```text
+10.0.0.10
+10.20.5.100
+172.16.10.20
+192.168.1.50
+```
+
+These addresses are commonly used in:
+
+* Internal networks
+* Cloud environments
+* Virtual Networks
+* Kubernetes clusters
+* Private databases
+* Internal services
+
+Example production architecture:
+
+```text
+AKS Node
+10.x.x.x
+
+Pod
+10.x.x.x
+
+Internal Database
+Private IP
+```
+
+---
+
+# 5. MAC Address
+
+A MAC address identifies a network interface at Layer 2.
+
+View MAC address information:
+
+```bash
+ip link
+```
+
+Example:
+
+```text
+link/ether 00:15:5d:xx:xx:xx
+```
+
+Basic difference:
+
+```text
+IP Address
+→ Logical network address
+→ Used for communication between networks
+
+MAC Address
+→ Layer 2 interface address
+→ Used within local network communication
+```
+
+---
+
+# 6. Default Gateway
+
+A default gateway is used when a Linux system needs to send traffic to another network.
+
+Example:
+
+```text
+Laptop
+192.168.1.20
+      |
+      v
+Gateway
+192.168.1.1
+      |
+      v
+Internet
+```
+
+View the routing table:
+
+```bash
+ip route
+```
+
+Example:
+
+```text
+default via 192.168.1.1 dev eth0
+192.168.1.0/24 dev eth0
+```
+
+The line:
+
+```text
+default via 192.168.1.1
+```
+
+means:
+
+> If no specific route matches the destination, send the traffic to 192.168.1.1.
+
+---
+
+# 7. Routing
+
+Routing determines where network packets should go.
+
+View routes:
+
+```bash
+ip route
+```
+
+Example:
+
+```text
+default via 192.168.1.1 dev eth0
+192.168.1.0/24 dev eth0
+10.0.0.0/16 via 192.168.1.254
+```
+
+Traffic flow:
+
+```text
+Destination
+     |
+Routing Table
+     |
+Best Matching Route
+     |
+Next Hop / Interface
+     |
+Destination Network
+```
+
+Routing becomes important when working with:
+
+* Azure VNets
+* Subnets
+* Route tables
+* AKS
+* VPNs
+* Private endpoints
+* Load balancers
+
+---
+
+# 8. Ports
+
+An IP address identifies a host, while a port identifies a service or application endpoint.
+
+Example:
+
+```text
+192.168.1.20:22
+```
+
+Meaning:
+
+```text
+Host: 192.168.1.20
+Port: 22
+```
+
+Common ports:
+
+| Port | Service                 |
+| ---- | ----------------------- |
+| 22   | SSH                     |
+| 53   | DNS                     |
+| 80   | HTTP                    |
+| 443  | HTTPS                   |
+| 3306 | MySQL                   |
+| 5432 | PostgreSQL              |
+| 6379 | Redis                   |
+| 8080 | Common application port |
+
+Applications can be configured to use different ports.
+
+---
+
+# 9. Listening Ports and Sockets
+
+A server application listens on a port for incoming connections.
+
+View listening TCP ports:
+
+```bash
+ss -lnt
+```
+
+View listening ports with associated processes:
+
+```bash
+ss -lntp
+```
+
+Options:
+
+```text
+-l → Listening sockets
+-n → Show numeric addresses and ports
+-t → TCP sockets
+-u → UDP sockets
+-p → Show associated processes
+```
+
+Example:
+
+```text
+LISTEN
+0.0.0.0:8080
+```
+
+This means a process is listening on TCP port `8080` on all IPv4 interfaces.
+
+Check a specific port:
+
+```bash
+ss -lntp | grep :8080
+```
+
+View both TCP and UDP listening sockets:
+
+```bash
+ss -lntup
+```
+
+---
+
+# 10. TCP
+
+TCP is a connection-oriented protocol.
+
+It provides:
+
+* Reliable delivery
+* Ordered data transmission
+* Connection establishment
+* Retransmission
+* Flow control
+
+Common services using TCP:
+
+```text
+HTTP
+HTTPS
+SSH
+Database connections
+```
+
+Basic TCP handshake:
+
+```text
+Client
+   |
+   | SYN
+   v
+Server
+   |
+   | SYN-ACK
+   v
+Client
+   |
+   | ACK
+   v
+Connection Established
+```
+
+---
+
+# 11. UDP
+
+UDP is connectionless.
+
+Characteristics:
+
+* Lower protocol overhead
+* No built-in delivery guarantee
+* No built-in ordering
+* No connection handshake
+
+Common use cases:
+
+```text
+DNS
+DHCP
+Streaming
+Real-time communication
+```
+
+TCP and UDP should not simply be understood as "slow versus fast." They have different reliability and communication characteristics.
+
+---
+
+# 12. Basic Connectivity Testing
+
+## Test IP Connectivity
+
+```bash
+ping 8.8.8.8
+```
+
+This tests basic IP connectivity using ICMP.
+
+A successful ping does not guarantee that an application port is reachable.
+
+## Test DNS Resolution
+
+```bash
+getent hosts google.com
+```
+
+Check configured DNS information:
+
+```bash
+cat /etc/resolv.conf
+```
+
+## Test TCP Connectivity
+
+```bash
+nc -vz google.com 443
+```
+
+Test another port:
+
+```bash
+nc -vz google.com 80
+```
+
+## Test HTTP/HTTPS
+
+```bash
+curl -v https://google.com
+```
+
+The verbose output can help inspect:
+
+```text
+DNS Resolution
+TCP Connection
+TLS Handshake
+HTTP Request
+HTTP Response
+```
+
+---
+
+# 13. Production Network Debugging Model
+
+When an application cannot connect to another service, do not randomly execute commands.
+
+Follow a systematic approach:
+
+```text
+1. Network Interface
+        |
+2. IP Address
+        |
+3. Routing
+        |
+4. DNS Resolution
+        |
+5. TCP Connectivity
+        |
+6. Port Availability
+        |
+7. Firewall / Security Rules
+        |
+8. Application Protocol
+        |
+9. Application
+```
+
+Useful commands:
+
+```bash
+ip addr
+```
+
+```bash
+ip route
+```
+
+```bash
+getent hosts <hostname>
+```
+
+```bash
+ping <IP>
+```
+
+```bash
+nc -vz <IP> <PORT>
+```
+
+```bash
+curl -v http://<IP>:<PORT>
+```
+
+```bash
+ss -lntp
+```
+
+This structured method is more effective than assuming that the application itself is the problem.
+
+---
+
+# 14. Production Failure Scenario
+
+Application:
+
+```text
+Node.js Application
+```
+
+Database:
+
+```text
+database.internal:5432
+```
+
+Error:
+
+```text
+Connection timeout
+```
+
+Do not immediately assume that the database is down.
+
+Debug systematically.
+
+## Step 1: Check DNS
+
+```bash
+getent hosts database.internal
+```
+
+Question:
+
+```text
+Does the hostname resolve to an IP address?
+```
+
+## Step 2: Check Routing
+
+```bash
+ip route
+```
+
+Question:
+
+```text
+Does the system have a route to the destination network?
+```
+
+## Step 3: Check TCP Connectivity
+
+```bash
+nc -vz database.internal 5432
+```
+
+Question:
+
+```text
+Can the application establish a TCP connection?
+```
+
+## Step 4: Check Database Listening Port
+
+On the database server:
+
+```bash
+ss -lntp | grep :5432
+```
+
+Question:ss -lntp | grep :5432
+
+```text
+Is PostgreSQL actually listening on port 5432?
+```
+
+## Step 5: Check Security Controls
+
+Investigate:
+
+* Firewall rules
+* NSGs
+* Security groups
+* Network policies
+* Application access rules
+
+This follows the incident troubleshooting flow:
+
+```text
+Detect
+   |
+Analyze
+   |
+Mitigate
+   |
+Identify Root Cause
+   |
+Prevent Recurrence
+```
+
+---
+
+# 15. Linux Networking and Kubernetes
+
+Linux networking is the foundation beneath Kubernetes networking.
+
+A simplified Kubernetes traffic flow:
+
+```text
+Pod
+ |
+Pod IP
+ |
+CNI
+ |
+Node
+ |
+Kubernetes Service
+ |
+DNS
+ |
+Network Policy / NSG
+ |
+Load Balancer or External Service
+```
+
+When debugging AKS, the same Linux networking concepts apply.
+
+For example:
+
+```text
+Application cannot reach service
+        |
+Is DNS working?
+        |
+Does the Service resolve?
+        |
+Is the target port reachable?
+        |
+Are endpoints available?
+        |
+Is the Pod running?
+        |
+Is traffic blocked by policy?
+```
+
+Understanding Linux networking improves troubleshooting of:
+
+* CoreDNS issues
+* Service connectivity
+* Pod-to-Pod communication
+* External API failures
+* Database connectivity
+* Load balancer problems
+* Network timeouts
+* Connection refused errors
+
+---
+
+# 16. Day 13 Lab
+
+Create the lab directory:
+
+```bash
+mkdir -p ~/devops-lab/day13-networking
+cd ~/devops-lab/day13-networking
+```
+
+Create the log file:
+
+```bash
+touch lab.log
+```
+
+Collect initial network information:
+
+```bash
+{
+echo "===== DAY 13 NETWORKING LAB ====="
+date
+echo
+echo "===== INTERFACES ====="
+ip addr
+echo
+echo "===== ROUTING ====="
+ip route
+echo
+echo "===== LISTENING PORTS ====="
+ss -lntp
+} | tee lab.log
+```
+
+---
+
+# Lab Tasks
+
+## Lab 1: Inspect Interfaces
+
+```bash
+ip addr
+```
+
+Identify:
+
+```text
+Interface Name
+IPv4 Address
+IPv6 Address
+MAC Address
+```
+
+---
+
+## Lab 2: Inspect Routing
+
+```bash
+ip route
+```
+
+Identify:
+
+```text
+Default Gateway
+Default Interface
+Connected Network
+Available Routes
+```
+
+---
+
+## Lab 3: Test DNS
+
+```bash
+getent hosts google.com
+```
+
+Check DNS configuration:
+
+```bash
+cat /etc/resolv.conf
+```
+
+---
+
+## Lab 4: Inspect Listening Services
+
+```bash
+ss -lntp
+```
+
+Then:
+
+```bash
+ss -lntup
+```
+
+Compare TCP and UDP listeners.
+
+---
+
+## Lab 5: Test TCP Ports
+
+```bash
+nc -vz google.com 443
+```
+
+```bash
+nc -vz google.com 80
+```
+
+Observe successful and failed connection behavior.
+
+---
+
+## Lab 6: Inspect HTTP Connectivity
+
+```bash
+curl -v https://google.com
+```
+
+Observe:
+
+```text
+Hostname Resolution
+Connection Establishment
+TLS Handshake
+HTTP Response
+```
+
+---
+
+# Key Commands – Day 13
+
+```bash
+ip addr
+ip link
+ip route
+ss -lntp
+ss -lntup
+ping <IP>
+getent hosts <hostname>
+nc -vz <host> <port>
+curl -v <URL>
+cat /etc/resolv.conf
+```
+
+---
+
+# Key Takeaways
+
+* A network interface connects a Linux system to a network.
+* An IP address identifies a host logically.
+* A MAC address identifies a network interface at Layer 2.
+* A port identifies a service or application endpoint.
+* The default gateway handles traffic for unknown remote networks.
+* The routing table determines where packets are sent.
+* TCP provides reliable, connection-oriented communication.
+* UDP is connectionless and has lower protocol overhead.
+* `ss` is used to inspect sockets and listening services.
+* `getent hosts` can be used to test hostname resolution.
+* `nc` is useful for testing TCP connectivity to a specific port.
+* `curl -v` helps inspect application-level HTTP connectivity.
+* Production troubleshooting should follow a structured network debugging flow instead of guessing.
+
+# DevOps / SRE Perspective
+
+For production troubleshooting, think in layers:
+
+```text
+Interface
+   ↓
+IP Address
+   ↓
+Route
+   ↓
+DNS
+   ↓
+Network Connectivity
+   ↓
+Port
+   ↓
+Security Controls
+   ↓
+Application
+```
+
+This debugging mindset will directly support future work with:
+
+```text
+AKS
+Kubernetes Services
+CoreDNS
+Ingress
+Load Balancers
+Azure VNets
+NSGs
+Private Endpoints
+Production Incident Response
+```
+
+# Day 13 Complete
+
+**Topic:** Linux Networking Fundamentals
+
+**Production Skill Built:** Systematic network and connectivity troubleshooting
+
+**Next Topic:** CIDR, Subnetting, Network Addressing, and Network Design
