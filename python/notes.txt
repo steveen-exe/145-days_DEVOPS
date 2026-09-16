@@ -1,0 +1,2 @@
+cpu manipulation
+-> psutils: lib used to manioulate the cpu
