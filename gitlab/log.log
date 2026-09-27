@@ -1,0 +1,45 @@
+Getting source from Git repository
+00:02
+Executing "step_script" stage of the job script
+00:00
+Using default image
+Using effective pull policy of [always] for container ruby:3.1
+Using docker image sha256:9981df1d883b246c27c62f8ccb9b57d3e07d14cee8092299e102b4a69c35ea61 for ruby:3.1 with digest ruby@sha256:91627f55e8969006aab67d15c92fb930500ff73948803da1330b8a853fecebb5 ...
+$ echo "=== PIPELINE EXECUTION REPORT ==="
+=== PIPELINE EXECUTION REPORT ===
+$ echo "Current Environment Target -> $ENVIRONMENT"
+Current Environment Target -> staging
+$ echo "Application Build Version   -> $GENERATED_VERSION"
+Application Build Version   -> v1.0.2887191534
+$ echo "Pulling secure password from UI settings -> $DATABASE_PASSWORD"
+Pulling secure password from UI settings -> 
+$ echo "Hardcoded password vulnerability example -> MyPlaintextPassword456"
+Hardcoded password vulnerability example -> MyPlaintextPassword456
+Cleaning up project directory and file based variables
+00:00
+Job succeeded
+
+
+---------------------------------------------------------
+
+Status
+Job
+Stage
+Coverage
+Status for job #16764219676
+Passed
+ 00:00:20
+ 4 minutes ago
+#16764219676: deploy_job
+ main
+38729ff0
+deploy
+Status for job #16764219675
+Passed
+ 00:00:21
+ 4 minutes ago
+#16764219675: build_job
+ main
+38729ff0
+build
+------------------------------------------------------------

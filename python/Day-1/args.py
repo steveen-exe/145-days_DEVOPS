@@ -1,4 +1,4 @@
-
+"""
 def check_services(service,namespace):
     print(f"Checking {service} in {namespace}")
 
@@ -27,4 +27,13 @@ deploy(
     app="gateway",
     namespace="prod",
     replicas=3
-)
+) 
+"""
+
+
+#testing *args | **kargs
+def master_function(*args, **kwargs):
+    print(f"args tuple: {args}")
+    print(f"kwargs dict: {kwargs}")
+
+master_function(1, 2, 3, name="Alice", age=30)
