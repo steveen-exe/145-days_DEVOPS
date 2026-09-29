@@ -44,7 +44,6 @@ deploy_app:
   script:
     - pip install twine
     - twine upload dist/*        # Uses the artifact generated in the build stage
-    - echo "app depoyment completed"
   dependencies:
     - install_and_build          # Explicitly pulls artifacts from the build job
 #this is a test file
