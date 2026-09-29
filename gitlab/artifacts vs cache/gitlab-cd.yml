@@ -1,0 +1,48 @@
+# Define a global cache for pip
+cache:
+  key:
+    files:
+      - requirements.txt  # Reuses cache unless requirements.txt changes
+  paths:
+    - .pip-cache/
+
+# Define global environment variables for pip
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+
+stages:
+  - build
+  - test
+  - deploy
+
+install_and_build:
+  stage: build
+  image: python:3.10
+  script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - python setup.py bdist_wheel  # Compiles the application
+  artifacts:
+    paths:
+      - dist/                      # Passes the built package to deployment
+    expire_in: 1 week
+
+run_tests:
+  stage: test
+  image: python:3.10
+  script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - pytest
+
+deploy_app:
+  stage: deploy
+  image: python:3.10
+  script:
+    - pip install twine
+    - twine upload dist/*        # Uses the artifact generated in the build stage
+  dependencies:
+    - install_and_build          # Explicitly pulls artifacts from the build job
