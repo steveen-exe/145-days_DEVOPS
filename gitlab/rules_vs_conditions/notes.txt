@@ -1,0 +1,8 @@
+Learn how to control when a job runs
+rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+##purpose -> what is the purpose of controling:
+    feature branch → test only
+    develop → test + build
+    main → test + build + deploy
