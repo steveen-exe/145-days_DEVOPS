@@ -1,0 +1,5 @@
+Needs in gitlab ->
+    In GitLab CI/CD, the standard behavior is strict stage ordering: 
+    all jobs in the build stage must completely finish before any job 
+    in the test stage can begin
+
