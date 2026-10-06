@@ -3,3 +3,8 @@ Needs in gitlab ->
     all jobs in the build stage must completely finish before any job 
     in the test stage can begin
 
+This can be break strict barrier using 'needs:'
+    this creates a direct ascyclic graph{DAG} 
+    - allowing a particular job to run exactly when the
+      dependedcy finish its run.
+    

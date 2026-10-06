@@ -1,0 +1,60 @@
+#here we can see 'unit-test-job' 'security-scan-job' 'Init-job' all belong to the build stage{build-job}
+# needs: Keyword: This explicitly defines a job's dependencies. When you add needs: ["job-a"] to job-b,
+#it tells the GitLab coordinator: "As soon as job-a completes successfully, start job-b immediately,
+# even if there are other jobs still running in job-a's stage.
+
+stages:
+  - build
+  - test
+  - deploy
+
+# -------------------------------------------------------------
+# 1. BUILD STAGE
+# -------------------------------------------------------------
+build-job:
+  stage: build
+  script:
+    - echo "Compiling application and creating artifacts..."
+    - mkdir dist
+    - echo "Build version 1.0" > dist/app.txt
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+
+# -------------------------------------------------------------
+# 2. TEST STAGE (Parallel Execution)
+# -------------------------------------------------------------
+unit-test-job:
+  stage: test
+  # This job only waits for build-job, ignoring any other build stage jobs
+  # Artifact Transmission: By default, when you use needs, GitLab automatically downloads the compilation artifacts from the dependency jobs listed
+  # For example, unit-test-job automatically receives the dist/ folder from build-job.
+  needs: ["build-job"]
+  script:
+    - echo "Running unit tests..."
+    - cat dist/app.txt
+
+security-scan-job:
+  stage: test
+  needs: ["build-job"]
+  script:
+    - echo "Running SAST and secret scanning..."
+
+lint-job:
+  stage: test
+  needs: ["build-job"]
+  script:
+    - echo "Linting code style..."
+
+# -------------------------------------------------------------
+# 3. DEPLOY STAGE (Downstream Dependency)
+# -------------------------------------------------------------
+deploy-job:
+  stage: deploy
+  # This job skips waiting for unit-test and security-scan. 
+  # It triggers the exact millisecond lint-job succeeds.
+  needs: ["lint-job"]
+  script:
+    - echo "Deploying application because linting passed!"
+    - cat dist/app.txt
